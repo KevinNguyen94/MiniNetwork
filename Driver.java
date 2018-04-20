@@ -180,9 +180,9 @@ public class Driver {
 
                 case 6:
                     if(selectedPerson != null) {
-                        if(selectedPerson.getAge()<2){
+                        if(selectedPerson.getAge()<3){
                             //System.out.println("Sorry, You are under 3 years old!!");
-                            throw new TooYoungException("The selected person is too young!!");
+                            throw new TooYoungException();
                         }
                         else{
                             System.out.println("hi "+ selectedPerson.getName() +", enter name of user you wanna add to your friendlist: "  );
