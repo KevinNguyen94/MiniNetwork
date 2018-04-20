@@ -9,7 +9,7 @@
  * @author khanhnguyen
  */
 public class Adult extends Person{
-    private Dependent[] children = new Dependent[3];
+    private Child[] children = new Child[3];
     private int childrenNumber= 0;
     private Adult spouse;
 
@@ -17,7 +17,7 @@ public class Adult extends Person{
         super(name,age);
     }
 
-    public void addChildren(Dependent child){
+    public void addChildren(Child child){
         children[childrenNumber] = child;
         childrenNumber++;
     }

@@ -17,10 +17,13 @@ public class Person {
     public Person(String name, int age) {
         this.name = name;
         this.age = age;
-        if(age<16)
-            this.userType = "dependent";
+        if(age<3)
+            this.userType = "Young Child";
+        else if(age>2 && age<16)
+            this.userType = "Child";
+
         else
-            this.userType = "adult";
+            this.userType = "Adult";
     }
 
 

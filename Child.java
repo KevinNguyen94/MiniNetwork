@@ -8,12 +8,12 @@
  *
  * @author khanhnguyen
  */
-public class Dependent extends Person{
+public class Child extends Person{
     private Adult[] parents = new Adult[2];
     private int parentNumber = 0;
 
 
-    public Dependent(String name, int age){
+    public Child(String name, int age){
         super(name,age);
     }
 

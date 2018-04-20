@@ -4,12 +4,14 @@
  * and open the template in the editor.
  */
 
+import exceptions.TooYoungException;
+
 /**
  *
  * @author khanhnguyen
  */
 public class MiniNet {
-    public static void main(String[] args){
+    public static void main(String[] args)throws TooYoungException{
         Driver miniNet = new Driver();
         miniNet.start();
 

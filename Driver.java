@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+import exceptions.TooYoungException;
+
 import java.util.Scanner;
 
 /**
@@ -17,7 +19,7 @@ public class Driver {
     private static Scanner sc;
     private static Scanner numberSc;
 
-    public void start() {
+    public void start() throws TooYoungException {
         sc = new Scanner(System.in);
         numberSc = new Scanner(System.in);
         int userNum = 6;
@@ -48,7 +50,7 @@ public class Driver {
                     addUser(users, userNum, username,age);
                     userNum++;
 
-                    if(age<16){
+                    if(age<16 && age>2){
                         Scanner input = new Scanner(System.in);
                         Person[] parents = new Adult[2];
                         boolean result= false;
@@ -58,7 +60,6 @@ public class Driver {
                         while(result == false){
                             for(int i=0; i<2 ; i++){
                                 System.out.println("input name of parent number "+(i+1));
-                                parents[i] = selectUser(users,userNum,input.next());
                             }
 
                             count=0;
@@ -96,8 +97,8 @@ public class Driver {
                         }
 
                         selectedPerson = selectUser(users, userNum, username);
-                        ((Dependent)selectedPerson).addParent((Adult)parents[0]);
-                        ((Dependent)selectedPerson).addParent((Adult)parents[1]);
+                        ((Child)selectedPerson).addParent((Adult)parents[0]);
+                        ((Child)selectedPerson).addParent((Adult)parents[1]);
 
                         ((Adult)parents[0]).setSpouse((Adult) parents[1]);
                         ((Adult)parents[1]).setSpouse((Adult) parents[0]);
@@ -131,10 +132,10 @@ public class Driver {
                         }
                         System.out.println("\n");
 
-                        if(selectedPerson instanceof Dependent){
+                        if(selectedPerson instanceof Child){
                             System.out.println("Parents: ");
                             for(int i=0 ; i<2 ; i++){
-                                System.out.print(((Dependent) selectedPerson).getParentList()[i].getName()+"  ");
+                                System.out.print(((Child) selectedPerson).getParentList()[i].getName()+"  ");
                             }
                             System.out.println("\n\n");
                         }
@@ -179,7 +180,11 @@ public class Driver {
 
                 case 6:
                     if(selectedPerson != null) {
-                        if(selectedPerson.getAge()>2){
+                        if(selectedPerson.getAge()<2){
+                            //System.out.println("Sorry, You are under 3 years old!!");
+                            throw new TooYoungException("The selected person is too young!!");
+                        }
+                        else{
                             System.out.println("hi "+ selectedPerson.getName() +", enter name of user you wanna add to your friendlist: "  );
                             username = sc.next();
                             friend = selectUser(users, userNum, username);
@@ -192,9 +197,7 @@ public class Driver {
                             }
                             else
                                 System.out.println("the friend is not existed!!!");
-                        }
-                        else{
-                            System.out.println("Sorry, You are under 3 years old!!");
+
                         }
 
 
@@ -214,10 +217,10 @@ public class Driver {
                             deletedUser.getFriendList()[i].setFriendNumber(deletedUser.getFriendList()[i].getFriendNumber() -1);
                         }
 
-                        if(deletedUser instanceof Dependent){
+                        if(deletedUser instanceof Child){
                             for(int i=0; i<2 ; i++){
-                                deleteUser(((Adult)((Dependent)deletedUser).getParentList()[i]).getChildrenList(),((Adult)((Dependent)deletedUser).getParentList()[i]).getChildrenNumber(),((Dependent)deletedUser).getName());
-                                ((Adult)((Dependent)deletedUser).getParentList()[i]).decreaseChildrenNumber();
+                                deleteUser(((Adult)((Child)deletedUser).getParentList()[i]).getChildrenList(),((Adult)((Child)deletedUser).getParentList()[i]).getChildrenNumber(),((Child)deletedUser).getName());
+                                ((Adult)((Child)deletedUser).getParentList()[i]).decreaseChildrenNumber();
                             }
                         }
 
@@ -254,11 +257,11 @@ public class Driver {
     }
 
     public void inputData(){
-        users[0] = new Dependent("Bob",15);
+        users[0] = new Child("Bob",15);
         users[4] = new Adult("Mom",35);
-        ((Dependent) users[0]).addParent((Adult)users[4]);
+        ((Child) users[0]).addParent((Adult)users[4]);
         users[5] = new Adult("Dad",340);
-        ((Dependent) users[0]).addParent((Adult)users[5]);
+        ((Child) users[0]).addParent((Adult)users[5]);
 
         ((Adult)users[4]).setSpouse((Adult) users[5]);
         ((Adult)users[5]).setSpouse((Adult) users[4]);
@@ -302,8 +305,10 @@ public class Driver {
 
 
     public static void addUser(Person[] users, int userNum , String name, int age) {
-        if(age <16)
-            users[userNum] = new Dependent(name,age);
+        if(age <3)
+            users[userNum] = new YoungChild(name,age);
+        else if (age <16 && age>2)
+            users[userNum] = new Child(name,age);
         else
             users[userNum] = new Adult(name,age);
 
