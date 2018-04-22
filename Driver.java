@@ -15,7 +15,6 @@ import java.util.Scanner;
  */
 public class Driver {
 
-
     private Person[] users = new Person[20];
     private static Scanner sc;
     private static Scanner numberSc;
@@ -161,9 +160,15 @@ public class Driver {
                                 System.out.println(((YoungChild)selectedPerson).getSiblings()[i].getName());
                             }
                             System.out.println("\n\n");
-
                         }
+
                         else if(selectedPerson instanceof Child){
+                            System.out.println("Classmate list:");
+                            for(int i=0 ; i< selectedPerson.getClassmateNumber() ; i++){
+                                System.out.print(selectedPerson.getClassmates()[i].getName()+"  ");
+                            }
+                            System.out.println("\n\n");
+
                             System.out.println("Parents: ");
                             for(int i=0 ; i<2 ; i++){
                                 System.out.print(((Child) selectedPerson).getParentList()[i].getName()+"  ");
@@ -172,6 +177,18 @@ public class Driver {
                         }
 
                         else if(selectedPerson instanceof Adult){
+                            System.out.println("Classmate list:");
+                            for(int i=0 ; i< selectedPerson.getClassmateNumber() ; i++){
+                                System.out.print(selectedPerson.getClassmates()[i].getName()+"  ");
+                            }
+                            System.out.println("\n\n");
+
+                            System.out.println("Colleague list:");
+                            for(int i=0 ; i< ((Adult) selectedPerson).getColleagueNumber() ; i++){
+                                System.out.print(((Adult) selectedPerson).getColleagues()[i].getName()+"  ");
+                            }
+                            System.out.println("\n\n");
+
                             if(((Adult) selectedPerson).isMarried()){
                                 System.out.println("Spouse: "+ ((Adult) selectedPerson).getSpouse().getName());
                                 System.out.println("Children: ");
@@ -236,7 +253,7 @@ public class Driver {
                                     selectedPerson.addFriend(friend);
                             }
                             else
-                                System.out.println("the friend is not existed!!!");
+                                System.out.println("the friend is not in the system!!!");
 
                         }
 
@@ -247,6 +264,55 @@ public class Driver {
                     break;
 
                 case 7:
+                    Scanner case7 = new Scanner(System.in);
+                    if(selectedPerson.getAge()<17){
+                        System.out.println("Sorry, you are under 17, can not add colleague!!!");
+                    }
+                    else{
+                        Person colleague;
+
+                        System.out.println("Enter your colleague name:");
+                        String colleagueName = case7.nextLine();
+                        colleague = selectUser(users,userNum,colleagueName);
+
+                        if(colleague!= null){
+                            if(selectedPerson.isFriend(colleagueName)){
+                                ((Adult)selectedPerson).addColleague((Adult)colleague);
+                                ((Adult)colleague).addColleague((Adult)selectedPerson);
+                            }
+                            else System.out.println("Sorry, you have not made friend with "+ colleagueName + " yet!!");
+                        }
+                        else
+                            System.out.println("Your colleague is not in the system!!!");
+
+                    }
+                    break;
+
+                case 8:
+                    Scanner case8 = new Scanner(System.in);
+                    if(selectedPerson.getAge()<3){
+                        System.out.println("Sorry, you are under 3, can not add classmate!!!");
+                    }
+                    else{
+                        Person classmate;
+
+                        System.out.println("Enter your classmate name:");
+                        String classmateName = case8.nextLine();
+                        classmate = selectUser(users,userNum,classmateName);
+
+                        if(classmate!= null){
+                            if(selectedPerson.isFriend(classmateName)){
+                                selectedPerson.addClassmate(classmate);
+                                classmate.addClassmate(selectedPerson);
+                            }
+                            else System.out.println("Sorry, you have not made friend with "+ classmateName + " yet!!");
+                        }
+                        else
+                            System.out.println("Your classmate is not in the system!!!");
+                    }
+                    break;
+
+                case 9:
                     System.out.println("Enter username: ");
                     username = sc.next();
                     Person deletedUser = selectUser(users, userNum, username);
@@ -271,11 +337,11 @@ public class Driver {
                         System.out.println("the user is not in the Network!!!");
                     break;
 
-                case 8:
-                    Scanner case8 = new Scanner(System.in);
+                case 10:
+                    Scanner case10 = new Scanner(System.in);
                     System.out.println("Select 2 person to check direct friend: ");
-                    Person person1 = selectUser(users,userNum,case8.next());
-                    Person person2 = selectUser(users,userNum,case8.next());
+                    Person person1 = selectUser(users,userNum,case10.next());
+                    Person person2 = selectUser(users,userNum,case10.next());
                     System.out.println(" 2 person to check: " + person1.getName() +"  "+ person2.getName()
                             + "\nResult: "+ (person1.isFriend(person2.getName())? "Yes, they are friends" : "Nope") );
 
@@ -338,20 +404,19 @@ public class Driver {
                 + "4. Display selected person's info\n"
                 + "5. Update selected person's info\n"
                 + "6. Add friend\n"
-                + "7. Delete user\n"
-                + "8. Are these two direct friends?\n"
+                + "7. Add colleague\n"
+                + "8. Add classmate\n"
+                + "9. Delete user\n"
+                + "10. Are these two direct friends?\n"
                 + "0. Exit\n"
                 + "Choose a number: (NUMBER ONLY): ");
     }
 
     public static Person selectUser(Person[] users, int userNum, String name) {
-        boolean selected = false;
         int i=0;
         for(i=0; i< userNum; i++) {
-            if((users[i].getName()).equals(name)) {
-                selected =true;
+            if((users[i].getName()).equals(name))
                 break;
-            }
         }
         return users[i];
     }

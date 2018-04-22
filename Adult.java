@@ -14,6 +14,9 @@ public class Adult extends Person{
     private Adult spouse;
     private Boolean isMarried = false;
 
+    private Adult[] colleagues = new Adult[10];
+    private int colleagueNumber = 0;
+
     public Adult(String name, int age){
         super(name,age);
     }
@@ -46,6 +49,18 @@ public class Adult extends Person{
 
     public void decreaseChildrenNumber(){
         childrenNumber--;
+    }
+
+    public void addColleague(Adult colleague){
+        colleagues[colleagueNumber] = colleague;
+        colleagueNumber++;
+    }
+
+    public int getColleagueNumber(){
+        return colleagueNumber;
+    }
+    public Adult[] getColleagues(){
+        return colleagues;
     }
 
 }

@@ -10,8 +10,8 @@ public class Person {
     private Person[] friends = new Person[10];
     private int friendNumber = 0;
 
-
-
+    private Person[] classmates= new Person[10];
+    private int classmateNumber = 0;
 
 
     public Person(String name, int age) {
@@ -90,4 +90,14 @@ public class Person {
 
     }
 
+    public void addClassmate(Person classmate){
+        classmates[classmateNumber] = classmate;
+        classmateNumber++;
+    }
+    public int getClassmateNumber(){
+        return classmateNumber;
+    }
+    public Person[] getClassmates(){
+        return classmates;
+    }
 }
