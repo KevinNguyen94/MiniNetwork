@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import exceptions.NotToBeFriendsException;
 import exceptions.TooYoungException;
 
 import java.util.Scanner;
@@ -19,15 +20,15 @@ public class Driver {
     private static Scanner sc;
     private static Scanner numberSc;
 
-    public void start() throws TooYoungException {
+    public void start() throws TooYoungException, NotToBeFriendsException {
         sc = new Scanner(System.in);
         numberSc = new Scanner(System.in);
-        int userNum = 6;
+        int userNum = 9;
 
         inputData();
 
         Person selectedPerson = null;
-        Person friend = null;
+        Person friend;
         String username;
         int age;
 
@@ -50,7 +51,7 @@ public class Driver {
                     addUser(users, userNum, username,age);
                     userNum++;
 
-                    if(age<16 && age>2){
+                    if(age<17 ){
                         Scanner input = new Scanner(System.in);
                         Person[] parents = new Adult[2];
                         boolean result= false;
@@ -60,6 +61,7 @@ public class Driver {
                         while(result == false){
                             for(int i=0; i<2 ; i++){
                                 System.out.println("input name of parent number "+(i+1));
+                                parents[i] = selectUser(users,userNum,input.next());
                             }
 
                             count=0;
@@ -105,6 +107,21 @@ public class Driver {
 
                     }
 
+
+                    Scanner number = new Scanner(System.in);
+                    selectedPerson = selectUser(users, userNum, username);
+
+                    if(age<3){
+                        Person youngChild;
+                        Scanner input1 = new Scanner(System.in);
+                        System.out.println("Do you have any sibling?\n please enter the number of siblings (0 if none)");
+                        int num = number.nextInt();
+                        for(int i=0;i<num;i++){
+                            System.out.println("input name of sibling number "+(i+1));
+                            youngChild = selectUser(users,userNum,input1.next());
+                            ((YoungChild)selectedPerson).addSibling((YoungChild) youngChild);
+                        }
+                    }
                     break;
 
                 case 3:
@@ -132,7 +149,21 @@ public class Driver {
                         }
                         System.out.println("\n");
 
-                        if(selectedPerson instanceof Child){
+                        if(selectedPerson instanceof YoungChild){
+                            System.out.println("Parents: ");
+                            for(int i=0 ; i<2 ; i++){
+                                System.out.print(((YoungChild) selectedPerson).getParentList()[i].getName()+"  ");
+                            }
+                            System.out.println("\n\n");
+
+                            System.out.println("Siblings: ");
+                            for(int i=0; i< ((YoungChild)selectedPerson).getSiblingNumber();i++){
+                                System.out.println(((YoungChild)selectedPerson).getSiblings()[i].getName());
+                            }
+                            System.out.println("\n\n");
+
+                        }
+                        else if(selectedPerson instanceof Child){
                             System.out.println("Parents: ");
                             for(int i=0 ; i<2 ; i++){
                                 System.out.print(((Child) selectedPerson).getParentList()[i].getName()+"  ");
@@ -141,12 +172,14 @@ public class Driver {
                         }
 
                         else if(selectedPerson instanceof Adult){
-                            System.out.println("Spouse: "+ ((Adult) selectedPerson).getSpouse().getName());
-                            System.out.println("Children: ");
-                            for(int i=0 ; i<((Adult) selectedPerson).getChildrenNumber() ; i++){
-                                System.out.print(((Adult) selectedPerson).getChildrenList()[i].getName()+"  ");
+                            if(((Adult) selectedPerson).isMarried()){
+                                System.out.println("Spouse: "+ ((Adult) selectedPerson).getSpouse().getName());
+                                System.out.println("Children: ");
+                                for(int i=0 ; i<((Adult) selectedPerson).getChildrenNumber() ; i++){
+                                    System.out.print(((Adult) selectedPerson).getChildrenList()[i].getName()+"  ");
+                                }
+                                System.out.println("\n\n");
                             }
-                            System.out.println("\n\n");
                         }
 
                     }
@@ -181,8 +214,7 @@ public class Driver {
                 case 6:
                     if(selectedPerson != null) {
                         if(selectedPerson.getAge()<3){
-                            //System.out.println("Sorry, You are under 3 years old!!");
-                            throw new TooYoungException();
+                            throw new TooYoungException("The selected person is too young!!");
                         }
                         else{
                             System.out.println("hi "+ selectedPerson.getName() +", enter name of user you wanna add to your friendlist: "  );
@@ -190,10 +222,18 @@ public class Driver {
                             friend = selectUser(users, userNum, username);
 
                             if(friend != null){
-                                if(Math.abs(selectedPerson.getAge() - friend.getAge())<4)
-                                    selectedPerson.addFriend(friend);
+                                if((selectedPerson.getAge() < 17 && friend.getAge() >16) || (selectedPerson.getAge() > 16 && friend.getAge() <17)){
+                                    throw new NotToBeFriendsException("Can not make an adult and a child friend!!!");
+                                }
+                                else if(selectedPerson.getAge() < 17 && friend.getAge() <17){
+                                    if(Math.abs(selectedPerson.getAge() - friend.getAge())<4)
+                                        selectedPerson.addFriend(friend);
+                                    else
+                                        throw new NotToBeFriendsException("Age gap larger than 3 between two children!!!");
+                                        //System.out.println("the age difference is more than 3!!!");
+                                }
                                 else
-                                    System.out.println("the age difference is more than 3!!!");
+                                    selectedPerson.addFriend(friend);
                             }
                             else
                                 System.out.println("the friend is not existed!!!");
@@ -260,8 +300,9 @@ public class Driver {
         users[0] = new Child("Bob",15);
         users[4] = new Adult("Mom",35);
         ((Child) users[0]).addParent((Adult)users[4]);
-        users[5] = new Adult("Dad",340);
+        users[5] = new Adult("Dad",34);
         ((Child) users[0]).addParent((Adult)users[5]);
+
 
         ((Adult)users[4]).setSpouse((Adult) users[5]);
         ((Adult)users[5]).setSpouse((Adult) users[4]);
@@ -273,6 +314,18 @@ public class Driver {
         users[0].addFriend(users[1]);
         users[1].addFriend(users[2]);
         users[2].addFriend(users[3]);
+
+
+        users[6] = new YoungChild("Kevin",2);
+        users[7] = new YoungChild("Neo",1);
+        users[8] = new YoungChild("Alvin",1);
+        ((YoungChild)users[6]).addSibling((YoungChild) users[7]);
+        ((YoungChild)users[6]).addSibling((YoungChild) users[8]);
+
+        ((Child) users[6]).addParent((Adult)users[1]);
+        ((Child) users[6]).addParent((Adult)users[2]);
+        ((Adult)users[1]).setSpouse((Adult) users[2]);
+        ((Adult)users[2]).setSpouse((Adult) users[1]);
     }
 
     public static void printMenu() {

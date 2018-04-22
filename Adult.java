@@ -12,6 +12,7 @@ public class Adult extends Person{
     private Child[] children = new Child[3];
     private int childrenNumber= 0;
     private Adult spouse;
+    private Boolean isMarried = false;
 
     public Adult(String name, int age){
         super(name,age);
@@ -26,8 +27,13 @@ public class Adult extends Person{
         return children;
     }
 
+    public Boolean isMarried(){
+        return isMarried;
+    }
+
     public void setSpouse(Adult spouse){
         this.spouse = spouse;
+        isMarried = true;
     }
 
     public Adult getSpouse(){

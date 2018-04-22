@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import exceptions.NotToBeFriendsException;
 import exceptions.TooYoungException;
 
 /**
@@ -11,7 +12,7 @@ import exceptions.TooYoungException;
  * @author khanhnguyen
  */
 public class MiniNet {
-    public static void main(String[] args)throws TooYoungException{
+    public static void main(String[] args)throws TooYoungException, NotToBeFriendsException{
         Driver miniNet = new Driver();
         miniNet.start();
 
