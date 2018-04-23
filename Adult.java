@@ -59,8 +59,12 @@ public class Adult extends Person{
     public int getColleagueNumber(){
         return colleagueNumber;
     }
+
     public Adult[] getColleagues(){
         return colleagues;
     }
 
+    public void decreaseColleagueNumber(){
+        colleagueNumber--;
+    }
 }

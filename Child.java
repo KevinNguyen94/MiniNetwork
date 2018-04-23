@@ -27,4 +27,8 @@ public class Child extends Person{
         return parents;
     }
 
+    public int getParentNumber(){
+        return parentNumber;
+    }
+
 }

@@ -15,6 +15,10 @@ public class YoungChild extends Child{
         return siblingNumber;
     }
 
+    public void decreaseSiblingNumber(){
+        siblingNumber--;
+    }
+
     public Person[] getSiblings(){
         return siblings;
     }

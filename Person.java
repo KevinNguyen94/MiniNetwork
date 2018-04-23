@@ -19,7 +19,7 @@ public class Person {
         this.age = age;
         if(age<3)
             this.userType = "Young Child";
-        else if(age>2 && age<16)
+        else if( age<16)
             this.userType = "Child";
 
         else
@@ -99,5 +99,8 @@ public class Person {
     }
     public Person[] getClassmates(){
         return classmates;
+    }
+    public void decreaseClassmateNumber(){
+        classmateNumber--;
     }
 }

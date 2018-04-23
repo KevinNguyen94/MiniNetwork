@@ -119,6 +119,7 @@ public class Driver {
                             System.out.println("input name of sibling number "+(i+1));
                             youngChild = selectUser(users,userNum,input1.next());
                             ((YoungChild)selectedPerson).addSibling((YoungChild) youngChild);
+                            ((YoungChild)youngChild).addSibling((YoungChild) selectedPerson);
                         }
                     }
                     break;
@@ -276,11 +277,11 @@ public class Driver {
                         colleague = selectUser(users,userNum,colleagueName);
 
                         if(colleague!= null){
-                            if(selectedPerson.isFriend(colleagueName)){
+                            //if(selectedPerson.isFriend(colleagueName)){
                                 ((Adult)selectedPerson).addColleague((Adult)colleague);
                                 ((Adult)colleague).addColleague((Adult)selectedPerson);
-                            }
-                            else System.out.println("Sorry, you have not made friend with "+ colleagueName + " yet!!");
+                           // }
+                           // else System.out.println("Sorry, you have not made friend with "+ colleagueName + " yet!!");
                         }
                         else
                             System.out.println("Your colleague is not in the system!!!");
@@ -301,11 +302,11 @@ public class Driver {
                         classmate = selectUser(users,userNum,classmateName);
 
                         if(classmate!= null){
-                            if(selectedPerson.isFriend(classmateName)){
+                            //if(selectedPerson.isFriend(classmateName)){
                                 selectedPerson.addClassmate(classmate);
                                 classmate.addClassmate(selectedPerson);
-                            }
-                            else System.out.println("Sorry, you have not made friend with "+ classmateName + " yet!!");
+                           // }
+                            //else System.out.println("Sorry, you have not made friend with "+ classmateName + " yet!!");
                         }
                         else
                             System.out.println("Your classmate is not in the system!!!");
@@ -318,15 +319,63 @@ public class Driver {
                     Person deletedUser = selectUser(users, userNum, username);
 
                     if(deletedUser != null){
-                        for(int i=0; i< deletedUser.getFriendNumber() ; i++){
-                            deleteUser(deletedUser.getFriendList()[i].getFriendList(),deletedUser.getFriendList()[i].getFriendNumber(), deletedUser.getName());
-                            deletedUser.getFriendList()[i].setFriendNumber(deletedUser.getFriendList()[i].getFriendNumber() -1);
+                        if(deletedUser instanceof YoungChild){
+                            /**
+                             * Delete deleted user record from the Sibling list of the deleted user' siblings
+                             */
+                            for(int i=0; i< ((YoungChild) deletedUser).getSiblingNumber() ; i++){
+                                deleteUser(((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).getSiblings(),((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).getSiblingNumber(), deletedUser.getName());
+                                ((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).decreaseSiblingNumber();
+                            }
+                            /**
+                             * Delete deleted user record from the children list of the deleted user' parents
+                             */
+                            for(int i=0; i<((YoungChild) deletedUser).getParentNumber() ; i++){
+                                deleteUser(((YoungChild)deletedUser).getParentList()[i].getChildrenList(),((YoungChild)deletedUser).getParentList()[i].getChildrenNumber(),deletedUser.getName());
+                                ((YoungChild)deletedUser).getParentList()[i].decreaseChildrenNumber();
+                            }
                         }
 
-                        if(deletedUser instanceof Child){
-                            for(int i=0; i<2 ; i++){
-                                deleteUser(((Adult)((Child)deletedUser).getParentList()[i]).getChildrenList(),((Adult)((Child)deletedUser).getParentList()[i]).getChildrenNumber(),((Child)deletedUser).getName());
-                                ((Adult)((Child)deletedUser).getParentList()[i]).decreaseChildrenNumber();
+                        else if(deletedUser instanceof Child){
+                            /**
+                             * Delete deleted user record from the Children list of the deleted user' Parents
+                             */
+                            for(int i=0; i<((Child) deletedUser).getParentNumber() ; i++){
+                                deleteUser(((Child)deletedUser).getParentList()[i].getChildrenList(),((Child)deletedUser).getParentList()[i].getChildrenNumber(),deletedUser.getName());
+                                ((Child)deletedUser).getParentList()[i].decreaseChildrenNumber();
+                            }
+
+                            /**
+                             * Delete deleted user record from the Friend list of the deleted user' Friends
+                             */
+                            for(int i=0; i< deletedUser.getFriendNumber() ; i++){
+                                deleteUser(deletedUser.getFriendList()[i].getFriendList(),deletedUser.getFriendList()[i].getFriendNumber(), deletedUser.getName());
+                                deletedUser.getFriendList()[i].setFriendNumber(deletedUser.getFriendList()[i].getFriendNumber() -1);
+                            }
+
+                            /**
+                             * Delete deleted user record from the Classmate list of the deleted user' Classmates
+                             */
+                            for(int i=0; i< deletedUser.getClassmateNumber() ; i++){
+                                deleteUser(deletedUser.getClassmates()[i].getClassmates(),deletedUser.getClassmates()[i].getClassmateNumber(), deletedUser.getName());
+                                deletedUser.getClassmates()[i].decreaseClassmateNumber();
+                            }
+                        }
+                        else if(deletedUser instanceof Adult){
+                            /**
+                             * Delete deleted user record from the Friend list of the deleted user' Friends
+                             */
+                            for(int i=0; i< deletedUser.getFriendNumber() ; i++){
+                                deleteUser(deletedUser.getFriendList()[i].getFriendList(),deletedUser.getFriendList()[i].getFriendNumber(), deletedUser.getName());
+                                deletedUser.getFriendList()[i].setFriendNumber(deletedUser.getFriendList()[i].getFriendNumber() -1);
+                            }
+
+                            /**
+                             * Delete deleted user record from the Colleague list of the deleted user' Colleagues
+                             */
+                            for(int i=0; i< ((Adult) deletedUser).getColleagueNumber() ; i++){
+                                deleteUser(((Adult) deletedUser).getColleagues()[i].getColleagues(),((Adult) deletedUser).getColleagues()[i].getColleagueNumber(), deletedUser.getName());
+                                ((Adult) deletedUser).getColleagues()[i].decreaseColleagueNumber();
                             }
                         }
 
@@ -386,10 +435,19 @@ public class Driver {
         users[7] = new YoungChild("Neo",1);
         users[8] = new YoungChild("Alvin",1);
         ((YoungChild)users[6]).addSibling((YoungChild) users[7]);
+        ((YoungChild)users[7]).addSibling((YoungChild) users[6]);
         ((YoungChild)users[6]).addSibling((YoungChild) users[8]);
+        ((YoungChild)users[8]).addSibling((YoungChild) users[6]);
+        ((YoungChild)users[7]).addSibling((YoungChild) users[8]);
+        ((YoungChild)users[8]).addSibling((YoungChild) users[7]);
 
         ((Child) users[6]).addParent((Adult)users[1]);
         ((Child) users[6]).addParent((Adult)users[2]);
+        ((Child) users[7]).addParent((Adult)users[1]);
+        ((Child) users[7]).addParent((Adult)users[2]);
+        ((Child) users[8]).addParent((Adult)users[1]);
+        ((Child) users[8]).addParent((Adult)users[2]);
+
         ((Adult)users[1]).setSpouse((Adult) users[2]);
         ((Adult)users[2]).setSpouse((Adult) users[1]);
     }
