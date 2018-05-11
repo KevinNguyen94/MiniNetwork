@@ -1,4 +1,6 @@
-public class YoungChild extends Child{
+package miniNetwork;
+
+public class YoungChild extends Child {
     private Person[] siblings = new Person[3];
     private int siblingNumber=0;
 

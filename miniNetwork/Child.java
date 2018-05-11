@@ -1,14 +1,16 @@
-/*
+package miniNetwork;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
+import miniNetwork.Adult;
+
 /**
  *
  * @author khanhnguyen
  */
-public class Child extends Person{
+public class Child extends Person {
     private Adult[] parents = new Adult[2];
     private int parentNumber = 0;
 

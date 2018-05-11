@@ -1,3 +1,4 @@
+package miniNetwork;
 
 public class Person {
 

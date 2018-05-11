@@ -1,4 +1,4 @@
-/*
+package miniNetwork;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -15,11 +15,24 @@ import java.util.Scanner;
  */
 public class Driver {
 
-    private Person[] users = new Person[20];
+    private static Person[] users = new Person[20];
+    private static int userNum = 9;
+    private static Person selectedPerson = null;
+
     private static Scanner sc;
     private static Scanner numberSc;
-    private int userNum = 9;
-    private Person selectedPerson = null;
+
+    public static void decreaseUserNumber(){
+        userNum--;
+    }
+
+    public static Person[] getPersons(){
+        return users;
+    }
+
+    public static int getUserNum(){
+        return userNum;
+    }
 
     public void start()throws TooYoungException, NotToBeFriendsException  {
         sc = new Scanner(System.in);
@@ -87,7 +100,7 @@ public class Driver {
 
     }
 
-    public void inputData(){
+    public static void inputData(){
         users[0] = new Child("Bob",15);
         users[4] = new Adult("Mom",35);
         ((Child) users[0]).addParent((Adult)users[4]);
@@ -165,7 +178,7 @@ public class Driver {
 
     }
 
-    public static void deleteUser(Person[] users, int userNum, String name) {
+    public static Boolean deleteUser(Person[] users, int userNum, String name) {
         boolean isFound = false;
         int i;
         for(i=0; i<userNum ; i++) {
@@ -180,15 +193,25 @@ public class Driver {
             for(int j = i; j<userNum ; j++) {
                 users[j] = users[j+1];
             }
+            System.out.println("Person is deleted!");
+            return true;
         }
-        else
+        else {
             System.out.println("Person is not found in list");
-
+            return false;
+        }
     }
 
     public static void listUsers(Person[] users, int userNum) {
         for(int i=0 ; i<userNum ; i++)
             System.out.println(users[i].getName());
+    }
+
+    public static String getUserList(){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i=0 ; i<userNum ; i++)
+            stringBuilder.append(users[i].getName()+"\n");
+        return stringBuilder.toString();
     }
 
     public void case2(){
@@ -308,7 +331,7 @@ public class Driver {
                 System.out.println("\n\n");
 
                 System.out.println("Siblings: ");
-                for(int i=0; i< ((YoungChild)selectedPerson).getSiblingNumber();i++){
+                for(int i = 0; i< ((YoungChild)selectedPerson).getSiblingNumber(); i++){
                     System.out.println(((YoungChild)selectedPerson).getSiblings()[i].getName());
                 }
                 System.out.println("\n\n");
@@ -336,7 +359,7 @@ public class Driver {
                 System.out.println("\n\n");
 
                 System.out.println("Colleague list:");
-                for(int i=0 ; i< ((Adult) selectedPerson).getColleagueNumber() ; i++){
+                for(int i = 0; i< ((Adult) selectedPerson).getColleagueNumber() ; i++){
                     System.out.print(((Adult) selectedPerson).getColleagues()[i].getName()+"  ");
                 }
                 System.out.println("\n\n");
@@ -344,7 +367,7 @@ public class Driver {
                 if(((Adult) selectedPerson).isMarried()){
                     System.out.println("Spouse: "+ ((Adult) selectedPerson).getSpouse().getName());
                     System.out.println("Children: ");
-                    for(int i=0 ; i<((Adult) selectedPerson).getChildrenNumber() ; i++){
+                    for(int i = 0; i<((Adult) selectedPerson).getChildrenNumber() ; i++){
                         System.out.print(((Adult) selectedPerson).getChildrenList()[i].getName()+"  ");
                     }
                     System.out.println("\n\n");
@@ -471,14 +494,14 @@ public class Driver {
                 /**
                  * Delete deleted user record from the Sibling list of the deleted user' siblings
                  */
-                for(int i=0; i< ((YoungChild) deletedUser).getSiblingNumber() ; i++){
+                for(int i = 0; i< ((YoungChild) deletedUser).getSiblingNumber() ; i++){
                     deleteUser(((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).getSiblings(),((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).getSiblingNumber(), deletedUser.getName());
                     ((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).decreaseSiblingNumber();
                 }
                 /**
                  * Delete deleted user record from the children list of the deleted user' parents
                  */
-                for(int i=0; i<((YoungChild) deletedUser).getParentNumber() ; i++){
+                for(int i = 0; i<((YoungChild) deletedUser).getParentNumber() ; i++){
                     deleteUser(((YoungChild)deletedUser).getParentList()[i].getChildrenList(),((YoungChild)deletedUser).getParentList()[i].getChildrenNumber(),deletedUser.getName());
                     ((YoungChild)deletedUser).getParentList()[i].decreaseChildrenNumber();
                 }
@@ -488,7 +511,7 @@ public class Driver {
                 /**
                  * Delete deleted user record from the Children list of the deleted user' Parents
                  */
-                for(int i=0; i<((Child) deletedUser).getParentNumber() ; i++){
+                for(int i = 0; i<((Child) deletedUser).getParentNumber() ; i++){
                     deleteUser(((Child)deletedUser).getParentList()[i].getChildrenList(),((Child)deletedUser).getParentList()[i].getChildrenNumber(),deletedUser.getName());
                     ((Child)deletedUser).getParentList()[i].decreaseChildrenNumber();
                 }
@@ -521,7 +544,7 @@ public class Driver {
                 /**
                  * Delete deleted user record from the Colleague list of the deleted user' Colleagues
                  */
-                for(int i=0; i< ((Adult) deletedUser).getColleagueNumber() ; i++){
+                for(int i = 0; i< ((Adult) deletedUser).getColleagueNumber() ; i++){
                     deleteUser(((Adult) deletedUser).getColleagues()[i].getColleagues(),((Adult) deletedUser).getColleagues()[i].getColleagueNumber(), deletedUser.getName());
                     ((Adult) deletedUser).getColleagues()[i].decreaseColleagueNumber();
                 }
