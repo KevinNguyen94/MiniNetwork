@@ -59,22 +59,33 @@ public class Controller extends Application {
     public void handleDeleteButton(ActionEvent event){
         System.out.println("You clicked Delete button!");
         if(Driver.deleteUser(Driver.getPersons(),Driver.getUserNum(),deleteTextField.getText()))
-            Driver.decreaseUserNumber();
+            Driver.setUserNum(Driver.getUserNum()-1);
     }
 
-    /**
-     * Handle all button click event on AddUSer.fxml
-     */
-
+    //Add User tab
     @FXML
-    private TextField nameText;
+    private TextField nameTextField;
+    @FXML
+    private TextField ageTextField;
 
     @FXML
     public void handleRegisterButton(ActionEvent event){
         System.out.println("You clicked Register button!");
-        if(!nameText.getText().isEmpty())
-            System.out.println("good!!!");
+        Driver.addUser(Driver.getPersons(),Driver.getUserNum(),nameTextField.getText(),Integer.parseInt(ageTextField.getText()));
+        Driver.setUserNum(Driver.getUserNum()+1);
     }
+
+
+
+
+
+
+
+
+
+    /**
+     * Handle all button click event on AddUSer.fxml
+     */
 
     @FXML
     public void handleOKButton(ActionEvent event) throws IOException {

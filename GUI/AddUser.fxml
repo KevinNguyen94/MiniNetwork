@@ -44,7 +44,7 @@
               </rowConstraints>
                <children>
                   <Button mnemonicParsing="false" onAction="#handleOKButton" text="OK" GridPane.columnIndex="1" />
-                  <Button fx:id="registerButton" onAction="#handleRegisterButton" mnemonicParsing="false"  text="Register" />
+                  <Button fx:id="registerButton" mnemonicParsing="false"  text="Register" />
                   <Button fx:id="exitButton" onAction="#handleExitButton" mnemonicParsing="false" text="Exit" GridPane.rowIndex="2" />
                </children>
                <padding>

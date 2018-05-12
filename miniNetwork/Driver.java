@@ -22,8 +22,8 @@ public class Driver {
     private static Scanner sc;
     private static Scanner numberSc;
 
-    public static void decreaseUserNumber(){
-        userNum--;
+    public static void setUserNum(int num){
+        userNum = num;
     }
 
     public static Person[] getPersons(){
