@@ -6,13 +6,19 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
+
 import java.io.IOException;
+
 import miniNetwork.Driver;
+import miniNetwork.Person;
+
+
+import static miniNetwork.Driver.selectUser;
+
+
 
 
 public class Controller extends Application {
@@ -56,9 +62,9 @@ public class Controller extends Application {
     private TextField deleteTextField;
 
     @FXML
-    public void handleDeleteButton(ActionEvent event){
+    public void handleDeleteButton(){
         System.out.println("You clicked Delete button!");
-        if(Driver.deleteUser(Driver.getPersons(),Driver.getUserNum(),deleteTextField.getText()))
+        if(Driver.deleteUser(Driver.getUsers(),Driver.getUserNum(),deleteTextField.getText()))
             Driver.setUserNum(Driver.getUserNum()-1);
     }
 
@@ -69,14 +75,38 @@ public class Controller extends Application {
     private TextField ageTextField;
 
     @FXML
-    public void handleRegisterButton(ActionEvent event){
+    public void handleRegisterButton(){
         System.out.println("You clicked Register button!");
-        Driver.addUser(Driver.getPersons(),Driver.getUserNum(),nameTextField.getText(),Integer.parseInt(ageTextField.getText()));
+        Driver.addUser(Driver.getUsers(),Driver.getUserNum(),nameTextField.getText(),Integer.parseInt(ageTextField.getText()));
         Driver.setUserNum(Driver.getUserNum()+1);
     }
 
+    //Check Friendship tab
+    @FXML
+    private TextField userOneTextFiled;
+    @FXML
+    private TextField userTwoTextFiled;
+    @FXML
+    private Label checkResultLabel;
 
 
+    @FXML
+    public void handleCheckButton(){
+        System.out.println("You clicked Check button!");
+
+        Person person1 = selectUser(Driver.getUsers(),Driver.getUserNum(),userOneTextFiled.getText());
+        Person person2 = selectUser(Driver.getUsers(),Driver.getUserNum(),userTwoTextFiled.getText());
+
+        if((person1 == null) && (person2 == null))
+            checkResultLabel.setText(userOneTextFiled.getText()+" and "+userTwoTextFiled.getText()+" are not in the System yet!");
+        else if((person1 != null) && (person2 == null))
+            checkResultLabel.setText(userTwoTextFiled.getText()+" is not in the System yet!");
+        else if((person1 == null) && (person2 != null))
+            checkResultLabel.setText(userOneTextFiled.getText()+" is not in the System yet!");
+        else
+            checkResultLabel.setText((person1.isFriend(person2.getName())? "Yes, they are friends" : "Nope"));
+
+    }
 
 
 

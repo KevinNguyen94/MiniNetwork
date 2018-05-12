@@ -26,7 +26,7 @@ public class Driver {
         userNum = num;
     }
 
-    public static Person[] getPersons(){
+    public static Person[] getUsers(){
         return users;
     }
 
