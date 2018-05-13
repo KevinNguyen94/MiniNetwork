@@ -12,7 +12,7 @@ import miniNetwork.Adult;
  */
 public class Child extends Person {
     private Adult[] parents = new Adult[2];
-    private int parentNumber = 0;
+    public int parentNumber = 0;
 
 
     public Child(String name, int age){

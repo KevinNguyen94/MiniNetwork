@@ -34,6 +34,14 @@ public class Driver {
         return userNum;
     }
 
+    public static Person getSelectedPerson(){
+        return selectedPerson;
+    }
+
+    public static void setSelectedPerson(Person person){
+       selectedPerson = person;
+    }
+
     public void start()throws TooYoungException, NotToBeFriendsException  {
         sc = new Scanner(System.in);
         numberSc = new Scanner(System.in);
@@ -214,6 +222,62 @@ public class Driver {
         return stringBuilder.toString();
     }
 
+    public static String getUserInfo(){
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("Name: " + selectedPerson.getName()
+                +"\nProfile picture: "+ selectedPerson.getProfilePicture()
+                +"\nStatus: "+selectedPerson.getStatus()
+                +"\nAge: "+ selectedPerson.getAge()
+                +"\nUser Type: "+ selectedPerson.getUserType()
+                +"\nFriend list: \n");
+
+        for(int i=0 ; i<selectedPerson.getFriendNumber() ; i++)
+            stringBuilder.append("   "+selectedPerson.getFriendList()[i].getName()+" ");
+
+        if(selectedPerson instanceof YoungChild) {
+            stringBuilder.append("\nParents: \n");
+            for (int i = 0; i < 2; i++) {
+                stringBuilder.append(((YoungChild) selectedPerson).getParentList()[i].getName() + "  ");
+            }
+
+            stringBuilder.append("\nSiblings: \n");
+            for (int i = 0; i < ((YoungChild) selectedPerson).getSiblingNumber(); i++) {
+                stringBuilder.append(((YoungChild) selectedPerson).getSiblings()[i].getName() + " ");
+            }
+        }
+        else if(selectedPerson instanceof Child) {
+            stringBuilder.append("\n\nParents: \n");
+            for (int i = 0; i < 2; i++) {
+                stringBuilder.append(((Child) selectedPerson).getParentList()[i].getName() + "  ");
+            }
+            stringBuilder.append("\nClassmate list:\n");
+            for (int i = 0; i < selectedPerson.getClassmateNumber(); i++) {
+                stringBuilder.append(selectedPerson.getClassmates()[i].getName() + "  ");
+            }
+        }
+        else if(selectedPerson instanceof Adult){
+            stringBuilder.append("\nClassmate list:\n");
+            for(int i=0 ; i< selectedPerson.getClassmateNumber() ; i++){
+                stringBuilder.append(selectedPerson.getClassmates()[i].getName()+"  ");
+            }
+
+            stringBuilder.append("\nColleague list:\n");
+            for(int i = 0; i< ((Adult) selectedPerson).getColleagueNumber() ; i++){
+                stringBuilder.append(((Adult) selectedPerson).getColleagues()[i].getName()+"  ");
+            }
+
+            if(((Adult) selectedPerson).isMarried()){
+                stringBuilder.append("\nSpouse: "+ ((Adult) selectedPerson).getSpouse().getName());
+                stringBuilder.append("\nChildren: ");
+                for(int i = 0; i<((Adult) selectedPerson).getChildrenNumber() ; i++){
+                    System.out.print(((Adult) selectedPerson).getChildrenList()[i].getName()+"  ");
+                }
+            }
+        }
+        return stringBuilder.toString();
+    }
+
     public void case2(){
         Person selectedPerson;
 
@@ -224,9 +288,9 @@ public class Driver {
         addUser(users, userNum, username,age);
         userNum++;
 
-        if(age<17 ){
+        if(age<17 && age>2){
             Scanner input = new Scanner(System.in);
-            Person[] parents = new Adult[2];
+            Person[] parents = new Person[2];
             boolean result= false;
             int count;
             System.out.println("The new user is under 16, please add 2 parents !");
@@ -249,23 +313,23 @@ public class Driver {
                     count++;
                 }
 
-                if(((Adult)parents[0]).getSpouse() != null && ((Adult)parents[1]).getSpouse() == null){
-                    System.out.println(parents[0].getName()+" already get married!!!");
-                    count++;
-                }
-
-                if(((Adult)parents[0]).getSpouse() == null && ((Adult)parents[1]).getSpouse() != null){
-                    System.out.println(parents[1].getName()+" already get married!!!");
-                    count++;
-                }
-
-                if(((Adult)parents[0]).getSpouse() != null && ((Adult)parents[1]).getSpouse() != null)
-                    if(!(((Adult)parents[0]).getSpouse().getName().equals(parents[1].getName()))){
-                        System.out.println("Both parents belong to different family!!!");
+                if((parents[0] instanceof Adult) && (parents[1] instanceof Adult)){
+                    if(((Adult)parents[0]).getSpouse() != null && ((Adult)parents[1]).getSpouse() == null){
+                        System.out.println(parents[0].getName()+" already get married!!!");
                         count++;
                     }
 
+                    if(((Adult)parents[0]).getSpouse() == null && ((Adult)parents[1]).getSpouse() != null){
+                        System.out.println(parents[1].getName()+" already get married!!!");
+                        count++;
+                    }
 
+                    if(((Adult)parents[0]).getSpouse() != null && ((Adult)parents[1]).getSpouse() != null)
+                        if(!(((Adult)parents[0]).getSpouse().getName().equals(parents[1].getName()))){
+                            System.out.println("Both parents belong to different family!!!");
+                            count++;
+                        }
+                }
 
                 if(count == 0)
                     result =true;
