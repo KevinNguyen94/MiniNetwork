@@ -16,6 +16,7 @@ import java.io.IOException;
 import miniNetwork.*;
 
 
+import static miniNetwork.Driver.importDataFromTxt;
 import static miniNetwork.Driver.selectUser;
 
 
@@ -33,6 +34,9 @@ public class Controller extends Application {
         //input data to object Driver
         Driver.inputData();
 
+        //input data from people.txt
+        Driver.importDataFromTxt();
+
         // Set the scene by getting the Parent scene from FXMLLoader
         Scene scene = new Scene(loader.load());
 
@@ -42,11 +46,11 @@ public class Controller extends Application {
 
     }
 
+
     /**
-     * Handle all button click event on Menu.fxml
+     *   "List User" tab
      */
 
-    //"List User" tab
     @FXML
     private TextArea userListArea;
 
@@ -59,7 +63,9 @@ public class Controller extends Application {
 
 
 
-    //"Add User" tab
+    /**
+     *   "Add User" tab
+     */
 
     private boolean isValidToRegister = true;
 
@@ -88,7 +94,6 @@ public class Controller extends Application {
             siblingGridPane.setVisible(true);
         }
     }
-
 
     @FXML
     private TextField parent1TextField;
@@ -203,7 +208,12 @@ public class Controller extends Application {
 
     }
 
-    //"Select User" tab
+
+
+    /**
+     *   "Select Use" tab
+     */
+
     @FXML
     private TextField selectUserLabel;
     @FXML
@@ -227,19 +237,36 @@ public class Controller extends Application {
     }
 
 
-    //"Delete User" tab
+
+    /**
+     *   "Delete Use" tab
+     */
+
     @FXML
     private TextField deleteTextField;
+    @FXML
+    private Label deleteResultLabel;
 
     @FXML
     public void handleDeleteButton(){
         System.out.println("You clicked Delete button!");
-        if(Driver.deleteUser(Driver.getUsers(),Driver.getUserNum(),deleteTextField.getText()))
+        if(Driver.deleteUser(Driver.getUsers(),Driver.getUserNum(),deleteTextField.getText())){
             Driver.setUserNum(Driver.getUserNum()-1);
+            deleteResultLabel.setText("User is deleted successfully!");
+        }
+        else
+            deleteResultLabel.setText("User is not found in system");
+
+
+
     }
 
 
-    //"Check Friendship" tab
+
+    /**
+     *   "Check Use" tab
+     */
+
     @FXML
     private TextField userOneTextFiled;
     @FXML
@@ -264,44 +291,5 @@ public class Controller extends Application {
         else
             checkResultLabel.setText((person1.isFriend(person2.getName())? "Yes, they are friends" : "Nope, they are not friends"));
 
-    }
-
-
-
-
-
-
-    /**
-     * Handle all button click event on AddUSer.fxml
-     */
-
-    @FXML
-    public void handleOKButton(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("/GUI/SelectUser.fxml"));
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Select User");
-        stage.setScene(new Scene(fxmlLoader.load()));
-        stage.show();
-    }
-
-    @FXML
-    public void handleExitButton(ActionEvent e){
-        Platform.exit();
-    }
-
-    /**
-     * Handle all button click event on SelectUser.fxml
-     */
-    @FXML
-    public void handleBackButton(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("/GUI/AddUser.fxml"));
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Add User");
-        stage.setScene(new Scene(fxmlLoader.load()));
-        stage.show();
     }
 }

@@ -89,7 +89,7 @@
                   </GridPane>
                   <GridPane fx:id="siblingGridPane" layoutX="307.0" layoutY="217.0" prefHeight="79.0" prefWidth="240.0" visible="false">
                      <children>
-                        <Button fx:id="addSiblingButton" onAction="#handleAddSiblingButton" mnemonicParsing="false" text="Add Sibling" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button fx:id="addSiblingButton" mnemonicParsing="false" onAction="#handleAddSiblingButton" text="Add Sibling" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label prefHeight="17.0" prefWidth="100.0" text="Sibling name" />
                         <TextField fx:id="siblingTextField" GridPane.columnIndex="1" />
                      </children>
@@ -134,13 +134,15 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="deleteButton" layoutX="32.0" layoutY="130.0" mnemonicParsing="false" onAction="#handleDeleteButton" text="Delete" />
+                  <Button fx:id="deleteButton" layoutX="65.0" layoutY="120.0" mnemonicParsing="false" onAction="#handleDeleteButton" text="Delete" />
                   <Label layoutX="18.0" layoutY="26.0" prefHeight="29.0" prefWidth="292.0" text="Choose a User to delete" textFill="#ee0404">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="deleteTextField" layoutX="18.0" layoutY="81.0" />
+                  <TextField fx:id="deleteTextField" layoutX="65.0" layoutY="81.0" />
+                  <Label fx:id="deleteResultLabel" layoutX="149.0" layoutY="122.0" prefHeight="24.0" prefWidth="203.0" />
+                  <Label layoutX="18.0" layoutY="86.0" prefHeight="17.0" prefWidth="46.0" text="Name" />
                </children></AnchorPane>
          </content>
       </Tab>

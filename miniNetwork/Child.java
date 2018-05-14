@@ -22,7 +22,7 @@ public class Child extends Person {
     public void addParent(Adult parent){
         parents[parentNumber] = parent;
         parentNumber++;
-        parent.addChildren(this);
+        //parent.addChildren(this);
     }
 
     public Adult[] getParentList(){

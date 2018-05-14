@@ -4,8 +4,11 @@ public class Person {
 
     private String name;
     private int age=0;
+    private char gender;
     private String profilePicture = "no profile picture";
     private String status = "no status";
+    private String state = "no state";
+
     private String userType;
 
     private Person[] friends = new Person[10];
@@ -32,6 +35,18 @@ public class Person {
         return name;
     }
 
+    public int getAge(){
+        return age;
+    }
+
+    public char getGender(){
+        return gender;
+    }
+
+    public void setGender(char gender){
+        this.gender = gender;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -40,19 +55,23 @@ public class Person {
         this.status = status;
     }
 
-    public int getAge(){
-        return age;
-    }
-
     public String getProfilePicture() {
-        if(profilePicture.equals("no profile picture"))
+        //if(profilePicture.equals("no profile picture"))
             return profilePicture;
-        else
-            return String.format( profilePicture + ".jpg");
+        //else
+         //   return String.format( profilePicture + ".jpg");
     }
 
     public void setProfilePicture(String profile){
         profilePicture = profile;
+    }
+
+    public String getState(){
+        return state;
+    }
+
+    public void setState(String state){
+        this.state = state;
     }
 
     public String getUserType(){

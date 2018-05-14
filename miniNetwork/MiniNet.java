@@ -14,8 +14,9 @@ import miniNetwork.Driver;
  */
 public class MiniNet {
     public static void main(String[] args)throws TooYoungException, NotToBeFriendsException{
-        Driver miniNet = new Driver();
-        miniNet.start();
+        //Driver miniNet = new Driver();
+        //miniNet.start();
+        //Driver.importDataFromTxt();
 
     }
 }

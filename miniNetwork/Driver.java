@@ -7,6 +7,12 @@ package miniNetwork;/*
 import exceptions.NotToBeFriendsException;
 import exceptions.TooYoungException;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -16,7 +22,7 @@ import java.util.Scanner;
 public class Driver {
 
     private static Person[] users = new Person[20];
-    private static int userNum = 9;
+    private static int userNum = 0;
     private static Person selectedPerson = null;
 
     private static Scanner sc;
@@ -147,6 +153,9 @@ public class Driver {
 
         ((Adult)users[1]).setSpouse((Adult) users[2]);
         ((Adult)users[2]).setSpouse((Adult) users[1]);
+
+        //set userNum:
+        userNum+=9;
     }
 
     public static void printMenu() {
@@ -201,11 +210,11 @@ public class Driver {
             for(int j = i; j<userNum ; j++) {
                 users[j] = users[j+1];
             }
-            System.out.println("Person is deleted!");
+            System.out.println("User is deleted successfully!");
             return true;
         }
         else {
-            System.out.println("Person is not found in list");
+            System.out.println("User is not found in system");
             return false;
         }
     }
@@ -228,7 +237,9 @@ public class Driver {
         stringBuilder.append("Name: " + selectedPerson.getName()
                 +"\nProfile picture: "+ selectedPerson.getProfilePicture()
                 +"\nStatus: "+selectedPerson.getStatus()
+                +"\nGender: "+selectedPerson.getGender()
                 +"\nAge: "+ selectedPerson.getAge()
+                +"\nState: "+ selectedPerson.getState()
                 +"\nUser Type: "+ selectedPerson.getUserType()
                 +"\nFriend list: \n");
 
@@ -238,40 +249,40 @@ public class Driver {
         if(selectedPerson instanceof YoungChild) {
             stringBuilder.append("\nParents: \n");
             for (int i = 0; i < 2; i++) {
-                stringBuilder.append(((YoungChild) selectedPerson).getParentList()[i].getName() + "  ");
+                stringBuilder.append("  "+((YoungChild) selectedPerson).getParentList()[i].getName());
             }
 
             stringBuilder.append("\nSiblings: \n");
             for (int i = 0; i < ((YoungChild) selectedPerson).getSiblingNumber(); i++) {
-                stringBuilder.append(((YoungChild) selectedPerson).getSiblings()[i].getName() + " ");
+                stringBuilder.append(" "+((YoungChild) selectedPerson).getSiblings()[i].getName() + " ");
             }
         }
         else if(selectedPerson instanceof Child) {
             stringBuilder.append("\n\nParents: \n");
             for (int i = 0; i < 2; i++) {
-                stringBuilder.append(((Child) selectedPerson).getParentList()[i].getName() + "  ");
+                stringBuilder.append("   "+ ((Child) selectedPerson).getParentList()[i].getName());
             }
             stringBuilder.append("\nClassmate list:\n");
             for (int i = 0; i < selectedPerson.getClassmateNumber(); i++) {
-                stringBuilder.append(selectedPerson.getClassmates()[i].getName() + "  ");
+                stringBuilder.append("   "+selectedPerson.getClassmates()[i].getName() + "  ");
             }
         }
         else if(selectedPerson instanceof Adult){
             stringBuilder.append("\nClassmate list:\n");
             for(int i=0 ; i< selectedPerson.getClassmateNumber() ; i++){
-                stringBuilder.append(selectedPerson.getClassmates()[i].getName()+"  ");
+                stringBuilder.append("   "+selectedPerson.getClassmates()[i].getName()+"  ");
             }
 
             stringBuilder.append("\nColleague list:\n");
             for(int i = 0; i< ((Adult) selectedPerson).getColleagueNumber() ; i++){
-                stringBuilder.append(((Adult) selectedPerson).getColleagues()[i].getName()+"  ");
+                stringBuilder.append("   "+((Adult) selectedPerson).getColleagues()[i].getName()+"  ");
             }
 
             if(((Adult) selectedPerson).isMarried()){
                 stringBuilder.append("\nSpouse: "+ ((Adult) selectedPerson).getSpouse().getName());
                 stringBuilder.append("\nChildren: ");
                 for(int i = 0; i<((Adult) selectedPerson).getChildrenNumber() ; i++){
-                    System.out.print(((Adult) selectedPerson).getChildrenList()[i].getName()+"  ");
+                    stringBuilder.append(((Adult) selectedPerson).getChildrenList()[i].getName()+"  ");
                 }
             }
         }
@@ -629,4 +640,82 @@ public class Driver {
         System.out.println(" 2 person to check: " + person1.getName() +"  "+ person2.getName()
                 + "\nResult: "+ (person1.isFriend(person2.getName())? "Yes, they are friends" : "Nope") );
     }
+
+
+    /**
+     * import data from people.txt and relations.txt
+     */
+    public static void importDataFromTxt(){
+
+        //people.txt file:
+        String[] res;
+        List<String> list = isList("src/documents/people.txt");
+        for(String line : list){
+            res = line.split(",");
+            addUser(users,userNum,res[0],Integer.parseInt(res[4]));
+            userNum++;
+
+            selectedPerson = selectUser(users,userNum,res[0]);
+            selectedPerson.setProfilePicture(res[1]);
+            selectedPerson.setStatus(res[2]);
+            selectedPerson.setGender(res[3].charAt(0));
+            selectedPerson.setState(res[5]);
+        }
+
+        //relations.txt file:
+        Person person1;
+        Person person2;
+        Person parent1 = null;
+        Person parent2 = null;
+
+        list = isList("src/documents/relations.txt");
+        for(String line : list){
+            res = line.split(",");
+            person1 = selectUser(users,userNum,res[0]);
+            person2 = selectUser(users,userNum,res[1]);
+            if(res[2].equals("friends")){
+                person1.addFriend(person2);
+            }
+            else if(res[2].equals("classmates")){
+                person1.addClassmate(person2);
+                person2.addClassmate(person1);
+            }
+            else if(res[2].equals("colleagues")){
+                ((Adult)person1).addColleague((Adult) person2);
+                ((Adult)person2).addColleague((Adult) person1);
+            }
+            else if(res[2].equals("couple")){
+                ((Adult)person1).setSpouse((Adult)person2);
+                ((Adult)person2).setSpouse((Adult)person1);
+                parent1 = person1;
+                parent2 = person2;
+
+            }
+            else if(res[2].equals("parent")){
+                if(res[0].equals(parent1.getName()) || res[0].equals(parent2.getName())){
+                    ((Child)person2).addParent((Adult)person1);
+                    ((Adult)person1).addChildren((Child)person2);
+                }
+                else{
+                    ((Child)person1).addParent((Adult)person2);
+                    ((Adult)person2).addChildren((Child)person1);
+                }
+            }
+        }
+    }
+
+    public static List<String> isList(String filename){
+        List<String> list = new ArrayList<String>();
+        File file = new File(filename);
+        if(file.exists()){
+            try {
+                list = Files.readAllLines(file.toPath(), Charset.defaultCharset());
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return list;
+    }
+
 }
