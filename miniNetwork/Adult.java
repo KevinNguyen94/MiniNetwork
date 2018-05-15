@@ -56,6 +56,17 @@ public class Adult extends Person {
         colleagueNumber++;
     }
 
+    public boolean isColleague(String name){
+        boolean selected = false;
+        for(int i=0; i< colleagueNumber;i++){
+            if((colleagues[i].getName()).equals(name)) {
+                selected =true;
+                break;
+            }
+        }
+        return selected;
+    }
+
     public int getColleagueNumber(){
         return colleagueNumber;
     }

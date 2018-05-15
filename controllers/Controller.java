@@ -18,6 +18,7 @@ import java.util.InputMismatchException;
 import miniNetwork.*;
 
 
+import static miniNetwork.Driver.deleteUser;
 import static miniNetwork.Driver.importDataFromTxt;
 import static miniNetwork.Driver.selectUser;
 
@@ -256,7 +257,6 @@ public class Controller extends Application {
         if(Driver.getSelectedPerson() != null){
             System.out.println("the selected user is: " + Driver.getSelectedPerson().getName());
             selectResultLabel.setText("the selected user: " + Driver.getSelectedPerson().getName());
-            System.out.println("the selected user: " + Driver.getSelectedPerson().getName());
             userInfoTextArea.setText(Driver.getUserInfo());
 
             if(Driver.getSelectedPerson() instanceof YoungChild){
@@ -310,8 +310,8 @@ public class Controller extends Application {
         friend = selectUser(Driver.getUsers(),Driver.getUserNum(),addFriendTextField.getText());
         if(friend != null){
             Driver.getSelectedPerson().addFriend(friend);
-            addFriendResultLabel.setText("Friend added successfully");
-            System.out.println("Friend added successfully");
+            addFriendResultLabel.setText(friend.getName()+" added successfully");
+            System.out.println(friend.getName()+" added successfully");
         }
         else{
             System.out.println("your friend is not in the system!");
@@ -333,8 +333,9 @@ public class Controller extends Application {
         classmate = selectUser(Driver.getUsers(),Driver.getUserNum(),addClassmateTextField.getText());
         if(classmate != null){
             Driver.getSelectedPerson().addClassmate(classmate);
-            addClassmateResultLabel.setText("Classmate added successfully");
-            System.out.println("Classmate added successfully");
+            classmate.addClassmate(Driver.getSelectedPerson());
+            addClassmateResultLabel.setText(classmate.getName()+" added successfully");
+            System.out.println(classmate.getName()+" added successfully");
         }
         else{
             System.out.println("your classmate is not in the system!");
@@ -361,8 +362,9 @@ public class Controller extends Application {
                 }
                 else{
                     ((Adult)Driver.getSelectedPerson()).addColleague(colleague);
-                    addColleagueResultLabel.setText("Colleague added successfully");
-                    System.out.println("Colleague added successfully");
+                    ((Adult)colleague).addColleague((Driver.getSelectedPerson()));
+                    addColleagueResultLabel.setText(colleague.getName()+" added successfully");
+                    System.out.println(colleague.getName()+" added successfully");
                 }
 
             }catch(NotToBeColleaguesException e){
@@ -390,19 +392,21 @@ public class Controller extends Application {
     @FXML
     public void handleDeleteButton(){
         System.out.println("You clicked Delete button!");
-        if(Driver.deleteUser(Driver.getUsers(),Driver.getUserNum(),deleteTextField.getText())){
+
+        Person deletedUser = selectUser(Driver.getUsers(),Driver.getUserNum(),deleteTextField.getText());
+        if(deletedUser != null){
+            Driver.deleteUserFromOtherList(deletedUser);
+            Driver.deleteUser(Driver.getUsers(),Driver.getUserNum(),deleteTextField.getText());
             Driver.setUserNum(Driver.getUserNum()-1);
             deleteResultLabel.setText("User is deleted successfully!");
             System.out.println("User is deleted successfully!");
+
         }
         else {
             deleteResultLabel.setText("User is not found in system");
             System.out.println("User is not found in system");
         }
-
-
     }
-
 
 
     /**
@@ -421,6 +425,8 @@ public class Controller extends Application {
     public void handleCheckButton(){
         System.out.println("You clicked Check button!");
 
+        StringBuilder stringBuilder = new StringBuilder();
+
         Person person1 = selectUser(Driver.getUsers(),Driver.getUserNum(),userOneTextFiled.getText());
         Person person2 = selectUser(Driver.getUsers(),Driver.getUserNum(),userTwoTextFiled.getText());
 
@@ -437,9 +443,25 @@ public class Controller extends Application {
             System.out.println(userOneTextFiled.getText()+" is not in the System yet!");
         }
         else {
-            checkResultLabel.setText((person1.isFriend(person2.getName()) ? "Yes, they are friends" : "Nope, they are not friends"));
-            System.out.println((person1.isFriend(person2.getName())? "Yes, they are friends" : "Nope, they are not friends"));
-        }
+            if((person1 instanceof YoungChild) || (person2 instanceof YoungChild)){
+                checkResultLabel.setText("There is at least one user is Young Child type\nAnd a Young Child does not have friend, classmate or colleague relation!!! ");
+            }
+            else{
+                if(person1.isFriend(person2.getName())){
+                    stringBuilder.append("They are friends\n");
+                }
+                if(person1.isClassmate(person2.getName())){
+                    stringBuilder.append("They are classmates\n");
+                }
+                if((person1 instanceof Adult) && (person2 instanceof Adult) && (((Adult) person1).isColleague(person2.getName()))){
+                    stringBuilder.append("They are colleagues");
+                }
+                checkResultLabel.setText(stringBuilder.toString());
 
+            }
+
+
+
+        }
     }
 }

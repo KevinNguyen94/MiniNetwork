@@ -97,23 +97,33 @@ public class Person {
         friend.setFriendNumber(friend.getFriendNumber()+1);
     }
 
-    public  boolean isFriend(String name) {
+    public boolean isFriend(String name) {
         boolean selected = false;
-        int i=0;
-        for(i=0; i< friendNumber; i++) {
+        for(int i=0; i< friendNumber; i++) {
             if((friends[i].getName()).equals(name)) {
                 selected =true;
                 break;
             }
         }
         return selected;
-
     }
 
     public void addClassmate(Person classmate){
         classmates[classmateNumber] = classmate;
         classmateNumber++;
     }
+
+    public boolean isClassmate(String name){
+        boolean selected = false;
+        for(int i=0; i< classmateNumber;i++){
+            if((classmates[i].getName()).equals(name)) {
+                selected =true;
+                break;
+            }
+        }
+        return selected;
+    }
+
     public int getClassmateNumber(){
         return classmateNumber;
     }

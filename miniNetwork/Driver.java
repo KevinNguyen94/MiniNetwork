@@ -211,11 +211,11 @@ public class Driver {
             for(int j = i; j<userNum ; j++) {
                 users[j] = users[j+1];
             }
-            System.out.println("User is deleted successfully!");
+            //System.out.println("User is deleted successfully!");
             return true;
         }
         else {
-            System.out.println("User is not found in system");
+            //System.out.println("User is not found in system");
             return false;
         }
     }
@@ -566,71 +566,84 @@ public class Driver {
         Person deletedUser = selectUser(users, userNum, username);
 
         if(deletedUser != null){
-            if(deletedUser instanceof YoungChild){
-                /**
-                 * Delete deleted user record from the Sibling list of the deleted user' siblings
-                 */
-                for(int i = 0; i< ((YoungChild) deletedUser).getSiblingNumber() ; i++){
-                    deleteUser(((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).getSiblings(),((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).getSiblingNumber(), deletedUser.getName());
-                    ((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).decreaseSiblingNumber();
-                }
-                /**
-                 * Delete deleted user record from the children list of the deleted user' parents
-                 */
-                for(int i = 0; i<((YoungChild) deletedUser).getParentNumber() ; i++){
-                    deleteUser(((YoungChild)deletedUser).getParentList()[i].getChildrenList(),((YoungChild)deletedUser).getParentList()[i].getChildrenNumber(),deletedUser.getName());
-                    ((YoungChild)deletedUser).getParentList()[i].decreaseChildrenNumber();
-                }
-            }
-
-            else if(deletedUser instanceof Child){
-                /**
-                 * Delete deleted user record from the Children list of the deleted user' Parents
-                 */
-                for(int i = 0; i<((Child) deletedUser).getParentNumber() ; i++){
-                    deleteUser(((Child)deletedUser).getParentList()[i].getChildrenList(),((Child)deletedUser).getParentList()[i].getChildrenNumber(),deletedUser.getName());
-                    ((Child)deletedUser).getParentList()[i].decreaseChildrenNumber();
-                }
-
-                /**
-                 * Delete deleted user record from the Friend list of the deleted user' Friends
-                 */
-                for(int i=0; i< deletedUser.getFriendNumber() ; i++){
-                    deleteUser(deletedUser.getFriendList()[i].getFriendList(),deletedUser.getFriendList()[i].getFriendNumber(), deletedUser.getName());
-                    deletedUser.getFriendList()[i].setFriendNumber(deletedUser.getFriendList()[i].getFriendNumber() -1);
-                }
-
-                /**
-                 * Delete deleted user record from the Classmate list of the deleted user' Classmates
-                 */
-                for(int i=0; i< deletedUser.getClassmateNumber() ; i++){
-                    deleteUser(deletedUser.getClassmates()[i].getClassmates(),deletedUser.getClassmates()[i].getClassmateNumber(), deletedUser.getName());
-                    deletedUser.getClassmates()[i].decreaseClassmateNumber();
-                }
-            }
-            else if(deletedUser instanceof Adult){
-                /**
-                 * Delete deleted user record from the Friend list of the deleted user' Friends
-                 */
-                for(int i=0; i< deletedUser.getFriendNumber() ; i++){
-                    deleteUser(deletedUser.getFriendList()[i].getFriendList(),deletedUser.getFriendList()[i].getFriendNumber(), deletedUser.getName());
-                    deletedUser.getFriendList()[i].setFriendNumber(deletedUser.getFriendList()[i].getFriendNumber() -1);
-                }
-
-                /**
-                 * Delete deleted user record from the Colleague list of the deleted user' Colleagues
-                 */
-                for(int i = 0; i< ((Adult) deletedUser).getColleagueNumber() ; i++){
-                    deleteUser(((Adult)((Adult) deletedUser).getColleagues()[i]).getColleagues(),((Adult)((Adult) deletedUser).getColleagues()[i]).getColleagueNumber(), deletedUser.getName());
-                    ((Adult)((Adult) deletedUser).getColleagues()[i]).decreaseColleagueNumber();
-                }
-            }
+            deleteUserFromOtherList(deletedUser);
 
             deleteUser(users, userNum, username);
             userNum--;
         }
         else
             System.out.println("the user is not in the Network!!!");
+    }
+
+    public static void deleteUserFromOtherList(Person deletedUser) {
+        if(deletedUser instanceof YoungChild){
+            /**
+             * Delete deleted user record from the Sibling list of the deleted user' siblings
+             */
+            for(int i = 0; i< ((YoungChild) deletedUser).getSiblingNumber() ; i++){
+                deleteUser(((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).getSiblings(),((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).getSiblingNumber(), deletedUser.getName());
+                ((YoungChild)((YoungChild) deletedUser).getSiblings()[i]).decreaseSiblingNumber();
+            }
+            /**
+             * Delete deleted user record from the children list of the deleted user' parents
+             */
+            for(int i = 0; i<((YoungChild) deletedUser).getParentNumber() ; i++){
+                deleteUser(((YoungChild)deletedUser).getParentList()[i].getChildrenList(),((YoungChild)deletedUser).getParentList()[i].getChildrenNumber(),deletedUser.getName());
+                ((YoungChild)deletedUser).getParentList()[i].decreaseChildrenNumber();
+            }
+        }
+
+        else if(deletedUser instanceof Child){
+            /**
+             * Delete deleted user record from the Children list of the deleted user' Parents
+             */
+            for(int i = 0; i<((Child) deletedUser).getParentNumber() ; i++){
+                deleteUser(((Child)deletedUser).getParentList()[i].getChildrenList(),((Child)deletedUser).getParentList()[i].getChildrenNumber(),deletedUser.getName());
+                ((Child)deletedUser).getParentList()[i].decreaseChildrenNumber();
+            }
+
+            /**
+             * Delete deleted user record from the Friend list of the deleted user' Friends
+             */
+            for(int i=0; i< deletedUser.getFriendNumber() ; i++){
+                deleteUser(deletedUser.getFriendList()[i].getFriendList(),deletedUser.getFriendList()[i].getFriendNumber(), deletedUser.getName());
+                deletedUser.getFriendList()[i].setFriendNumber(deletedUser.getFriendList()[i].getFriendNumber() -1);
+            }
+
+            /**
+             * Delete deleted user record from the Classmate list of the deleted user' Classmates
+             */
+            for(int i=0; i< deletedUser.getClassmateNumber() ; i++){
+                deleteUser(deletedUser.getClassmates()[i].getClassmates(),deletedUser.getClassmates()[i].getClassmateNumber(), deletedUser.getName());
+                deletedUser.getClassmates()[i].decreaseClassmateNumber();
+            }
+        }
+        else if(deletedUser instanceof Adult){
+            /**
+             * Delete deleted user record from the Classmate list of the deleted user' Classmates
+             */
+            for(int i=0; i< deletedUser.getClassmateNumber() ; i++){
+                deleteUser(deletedUser.getClassmates()[i].getClassmates(),deletedUser.getClassmates()[i].getClassmateNumber(), deletedUser.getName());
+                deletedUser.getClassmates()[i].decreaseClassmateNumber();
+            }
+
+            /**
+             * Delete deleted user record from the Friend list of the deleted user' Friends
+             */
+            for(int i=0; i< deletedUser.getFriendNumber() ; i++){
+                deleteUser(deletedUser.getFriendList()[i].getFriendList(),deletedUser.getFriendList()[i].getFriendNumber(), deletedUser.getName());
+                deletedUser.getFriendList()[i].setFriendNumber(deletedUser.getFriendList()[i].getFriendNumber() -1);
+            }
+
+            /**
+             * Delete deleted user record from the Colleague list of the deleted user' Colleagues
+             */
+            for(int i = 0; i< ((Adult) deletedUser).getColleagueNumber() ; i++){
+                deleteUser(((Adult)((Adult) deletedUser).getColleagues()[i]).getColleagues(),((Adult)((Adult) deletedUser).getColleagues()[i]).getColleagueNumber(), deletedUser.getName());
+                ((Adult)((Adult) deletedUser).getColleagues()[i]).decreaseColleagueNumber();
+            }
+
+        }
     }
 
     public void case10(){
