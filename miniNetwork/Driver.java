@@ -155,7 +155,8 @@ public class Driver {
         ((Adult)users[2]).setSpouse((Adult) users[1]);
 
         //set userNum:
-        userNum+=9;
+        setUserNum(getUserNum()+9);
+        //userNum+=9;
     }
 
     public static void printMenu() {
@@ -248,7 +249,7 @@ public class Driver {
 
         if(selectedPerson instanceof YoungChild) {
             stringBuilder.append("\nParents: \n");
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < ((YoungChild) selectedPerson).getParentNumber(); i++) {
                 stringBuilder.append("  "+((YoungChild) selectedPerson).getParentList()[i].getName());
             }
 
@@ -259,7 +260,7 @@ public class Driver {
         }
         else if(selectedPerson instanceof Child) {
             stringBuilder.append("\n\nParents: \n");
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < ((Child) selectedPerson).getParentNumber(); i++) {
                 stringBuilder.append("   "+ ((Child) selectedPerson).getParentList()[i].getName());
             }
             stringBuilder.append("\nClassmate list:\n");
@@ -480,7 +481,7 @@ public class Driver {
         Person friend;
         if(selectedPerson != null) {
             if(selectedPerson.getAge()<3){
-                throw new TooYoungException("The selected person is too young!!");
+                throw new TooYoungException();
             }
             else{
                 System.out.println("hi "+ selectedPerson.getName() +", enter name of user you wanna add to your friendlist: "  );
@@ -653,7 +654,8 @@ public class Driver {
         for(String line : list){
             res = line.split(",");
             addUser(users,userNum,res[0],Integer.parseInt(res[4]));
-            userNum++;
+            //userNum++;
+            setUserNum(getUserNum()+1);
 
             selectedPerson = selectUser(users,userNum,res[0]);
             selectedPerson.setProfilePicture(res[1]);
@@ -716,6 +718,20 @@ public class Driver {
             }
         }
         return list;
+    }
+
+    public static void testException(){
+        int i=2;
+        try{
+            if(i==2)
+                throw new TooYoungException();
+            else if(i==3)
+                throw new NotToBeFriendsException("so Wrong!!!");
+        } catch (TooYoungException e) {
+            System.out.println("error");
+        }catch(NotToBeFriendsException e){
+
+        }
     }
 
 }

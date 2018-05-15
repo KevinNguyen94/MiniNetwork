@@ -12,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.InputMismatchException;
 
 import miniNetwork.*;
 
@@ -30,6 +31,7 @@ public class Controller extends Application {
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/GUI/Menu.fxml"));
+
 
         //input data to object Driver
         Driver.inputData();
@@ -81,17 +83,23 @@ public class Controller extends Application {
     private Label resultLabel;
 
     @FXML
-    public void handleCheckInvalidButton(){
+    public void handleCheckInvalidButton() {
         System.out.println("You clicked \"Check Invalid\" button!");
         parentsGridPane.setVisible(false);
         siblingGridPane.setVisible(false);
+        try {
+            if (Integer.parseInt(ageTextField.getText()) < 17 && Integer.parseInt(ageTextField.getText()) > 2) {
+                parentsGridPane.setVisible(true);
+            }
+            else if (Integer.parseInt(ageTextField.getText()) < 3) {
+                parentsGridPane.setVisible(true);
+                siblingGridPane.setVisible(true);
+            }
+            else if(Integer.parseInt(ageTextField.getText())>16)
+                resultLabel.setText("the Username and Age valid");
 
-        if(Integer.parseInt(ageTextField.getText())<17 &&  Integer.parseInt(ageTextField.getText())>2) {
-            parentsGridPane.setVisible(true);
-        }
-        else if(Integer.parseInt(ageTextField.getText())<3){
-            parentsGridPane.setVisible(true);
-            siblingGridPane.setVisible(true);
+        } catch (NumberFormatException e) {
+            resultLabel.setText("Wrong format!! please input a number!!");
         }
     }
 
@@ -220,14 +228,39 @@ public class Controller extends Application {
     private TextArea userInfoTextArea;
     @FXML
     private Label selectResultLabel;
+    @FXML
+    private GridPane addFriendGridPane;
+    @FXML
+    private GridPane addClassmateGridPane;
+    @FXML
+    private GridPane addColleagueGridPane;
 
     @FXML
     public void handleSelectButton(){
+        System.out.println("You clicked \"Select\" button!");
+        addFriendGridPane.setVisible(false);
+        addClassmateGridPane.setVisible(false);
+        addColleagueGridPane.setVisible(false);
+
         Driver.setSelectedPerson(selectUser(Driver.getUsers(),Driver.getUserNum(),selectUserLabel.getText()));
         if(Driver.getSelectedPerson() != null){
             System.out.println("the selected user is: " + Driver.getSelectedPerson().getName());
             selectResultLabel.setText("the selected user: " + Driver.getSelectedPerson().getName());
             userInfoTextArea.setText(Driver.getUserInfo());
+
+            if(Driver.getSelectedPerson() instanceof YoungChild){
+                addFriendGridPane.setVisible(false);
+                addClassmateGridPane.setVisible(false);
+            }
+            else if(Driver.getSelectedPerson() instanceof Child){
+                addFriendGridPane.setVisible(true);
+                addClassmateGridPane.setVisible(true);
+            }
+            else if(Driver.getSelectedPerson() instanceof Adult){
+                addFriendGridPane.setVisible(true);
+                addClassmateGridPane.setVisible(true);
+                addColleagueGridPane.setVisible(true);
+            }
         }
         else{
             selectResultLabel.setText("the user \"" + selectUserLabel.getText() + "\" is not registered yet!!");
@@ -236,6 +269,47 @@ public class Controller extends Application {
 
     }
 
+
+    @FXML
+    private TextField pictureTextField;
+    @FXML
+    private TextField statusTextField;
+    @FXML
+    private TextField stateTextField;
+    @FXML
+    public void handleInfoUpdateButton(){
+        System.out.println("You clicked \"Update Info\" button");
+        Driver.getSelectedPerson().setProfilePicture(pictureTextField.getText());
+        Driver.getSelectedPerson().setStatus(statusTextField.getText());
+        Driver.getSelectedPerson().setState(stateTextField.getText());
+    }
+
+
+    @FXML
+    private TextField addFriendTextField;
+
+    @FXML
+    public void handleAddFriendButton(){
+        System.out.println("You clicked \"Add Friend\" button!");
+    }
+
+
+    @FXML
+    private TextField addClassmateTextField;
+
+    @FXML
+    public void handleAddClassmateButton(){
+        System.out.println("You clicked \"Add Classmate\" button!");
+    }
+
+
+    @FXML
+    private TextField addColleagueTextField;
+
+    @FXML
+    public void handleAddColleagueButton(){
+        System.out.println("You clicked \"Add Colleague\" button!");
+    }
 
 
     /**
