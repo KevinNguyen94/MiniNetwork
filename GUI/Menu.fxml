@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -16,7 +21,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
   <tabs>
     <Tab text="List User">
       <content>
@@ -168,7 +173,7 @@
                               <RowConstraints maxHeight="244.0" minHeight="10.0" prefHeight="84.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <GridPane fx:id="addFriendGridPane" layoutX="24.0" layoutY="370.0" prefHeight="79.0" prefWidth="240.0" visible="false">
+                        <GridPane fx:id="addFriendGridPane" layoutX="24.0" layoutY="370.0" prefHeight="79.0" prefWidth="240.0">
                            <children>
                               <Button fx:id="addFriendButton" mnemonicParsing="false" onAction="#handleAddFriendButton" text="Add Friend" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label prefHeight="17.0" prefWidth="48.0" text="Friend" />
@@ -183,7 +188,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <GridPane fx:id="addClassmateGridPane" layoutX="24.0" layoutY="471.0" prefHeight="79.0" prefWidth="240.0" visible="false">
+                        <GridPane fx:id="addClassmateGridPane" layoutX="24.0" layoutY="471.0" prefHeight="79.0" prefWidth="240.0">
                            <children>
                               <Button fx:id="addClassmateButton" mnemonicParsing="false" onAction="#handleAddClassmateButton" text="Add Classmate" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label prefHeight="17.0" prefWidth="100.0" text="Classmate" />
@@ -198,7 +203,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <GridPane fx:id="addColleagueGridPane" layoutX="302.0" layoutY="370.0" prefHeight="79.0" prefWidth="240.0" visible="false">
+                        <GridPane fx:id="addColleagueGridPane" layoutX="302.0" layoutY="370.0" prefHeight="79.0" prefWidth="240.0">
                            <children>
                               <Button fx:id="addColleagueButton" mnemonicParsing="false" onAction="#handleAddColleagueButton" text="Add Colleague" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label prefHeight="17.0" prefWidth="100.0" text="Colleague" />
@@ -219,6 +224,9 @@
                               <Font size="24.0" />
                            </font>
                         </Label>
+                        <Label fx:id="addFriendResultLabel" layoutX="167.0" layoutY="416.0" prefHeight="26.0" prefWidth="204.0" />
+                        <Label fx:id="addClassmateResultLabel" layoutX="225.0" layoutY="517.0" prefHeight="26.0" prefWidth="169.0" />
+                        <Label fx:id="addColleagueResultLabel" layoutX="380.0" layoutY="449.0" prefHeight="26.0" prefWidth="246.0" />
                      </children>
                   </AnchorPane>
                </content>

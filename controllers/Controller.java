@@ -1,5 +1,6 @@
 package controllers;
 
+import exceptions.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -95,11 +96,13 @@ public class Controller extends Application {
                 parentsGridPane.setVisible(true);
                 siblingGridPane.setVisible(true);
             }
-            else if(Integer.parseInt(ageTextField.getText())>16)
+            else if(Integer.parseInt(ageTextField.getText())>16){
                 resultLabel.setText("the Username and Age valid");
-
+                System.out.println("the Username and Age valid");
+            }
         } catch (NumberFormatException e) {
             resultLabel.setText("Wrong format!! please input a number!!");
+            System.out.println("Wrong format!! please input a number!!");
         }
     }
 
@@ -150,12 +153,15 @@ public class Controller extends Application {
                 }
         }
         addParentsResultLabel.setText(stringBuilder.toString());
+        System.out.println(stringBuilder.toString());
 
         if(falseCount!=0)
             isValidToRegister=false;
 
-        if(isValidToRegister)
+        if(isValidToRegister){
             addParentsResultLabel.setText("Valid parents!!!");
+            System.out.println("Valid parents!!!");
+        }
 
     }
 
@@ -172,9 +178,11 @@ public class Controller extends Application {
         Person youngChild = selectUser(Driver.getUsers(),Driver.getUserNum(), siblingTextField.getText());
         if(youngChild instanceof YoungChild){
             addSiblingResultLabel.setText("Valid Sibling");
+            System.out.println("Valid Sibling");
         }
         else{
             addSiblingResultLabel.setText("Oops, inValid Sibling");
+            System.out.println("Oops, inValid Sibling");
             isValidToRegister=false;
         }
 
@@ -210,10 +218,12 @@ public class Controller extends Application {
             }
 
             resultLabel.setText("registered successfully!!!");
+            System.out.println("registered successfully!!!");
         }
-        else
+        else {
             resultLabel.setText("Oops, registered unsuccessfully!!!");
-
+            System.out.println("Oops, registered unsuccessfully!!!");
+        }
     }
 
 
@@ -246,6 +256,7 @@ public class Controller extends Application {
         if(Driver.getSelectedPerson() != null){
             System.out.println("the selected user is: " + Driver.getSelectedPerson().getName());
             selectResultLabel.setText("the selected user: " + Driver.getSelectedPerson().getName());
+            System.out.println("the selected user: " + Driver.getSelectedPerson().getName());
             userInfoTextArea.setText(Driver.getUserInfo());
 
             if(Driver.getSelectedPerson() instanceof YoungChild){
@@ -264,6 +275,7 @@ public class Controller extends Application {
         }
         else{
             selectResultLabel.setText("the user \"" + selectUserLabel.getText() + "\" is not registered yet!!");
+            System.out.println("the user \"" + selectUserLabel.getText() + "\" is not registered yet!!");
             userInfoTextArea.setText("");
         }
 
@@ -287,33 +299,87 @@ public class Controller extends Application {
 
     @FXML
     private TextField addFriendTextField;
+    @FXML
+    private Label addFriendResultLabel;
+
+    Person friend =null;
 
     @FXML
     public void handleAddFriendButton(){
         System.out.println("You clicked \"Add Friend\" button!");
+        friend = selectUser(Driver.getUsers(),Driver.getUserNum(),addFriendTextField.getText());
+        if(friend != null){
+            Driver.getSelectedPerson().addFriend(friend);
+            addFriendResultLabel.setText("Friend added successfully");
+            System.out.println("Friend added successfully");
+        }
+        else{
+            System.out.println("your friend is not in the system!");
+            addFriendResultLabel.setText("Friend not in System!!");
+        }
     }
 
 
     @FXML
     private TextField addClassmateTextField;
+    @FXML
+    private Label addClassmateResultLabel;
+
+    Person classmate = null;
 
     @FXML
     public void handleAddClassmateButton(){
         System.out.println("You clicked \"Add Classmate\" button!");
+        classmate = selectUser(Driver.getUsers(),Driver.getUserNum(),addClassmateTextField.getText());
+        if(classmate != null){
+            Driver.getSelectedPerson().addClassmate(classmate);
+            addClassmateResultLabel.setText("Classmate added successfully");
+            System.out.println("Classmate added successfully");
+        }
+        else{
+            System.out.println("your classmate is not in the system!");
+            addClassmateResultLabel.setText("Classmate not in System!!");
+        }
     }
 
 
     @FXML
     private TextField addColleagueTextField;
+    @FXML
+    private Label addColleagueResultLabel;
+
+    Person colleague = null;
 
     @FXML
     public void handleAddColleagueButton(){
         System.out.println("You clicked \"Add Colleague\" button!");
+        colleague = selectUser(Driver.getUsers(),Driver.getUserNum(),addColleagueTextField.getText());
+        if(colleague != null){
+            try{
+                if(! (colleague instanceof Adult)){
+                    throw new NotToBeColleaguesException();
+                }
+                else{
+                    ((Adult)Driver.getSelectedPerson()).addColleague(colleague);
+                    addColleagueResultLabel.setText("Colleague added successfully");
+                    System.out.println("Colleague added successfully");
+                }
+
+            }catch(NotToBeColleaguesException e){
+                addColleagueResultLabel.setText("only adult accepted!");
+                System.out.println("only adult accepted!");
+            }
+        }
+        else{
+            System.out.println("your colleague is not in the system!");
+            addColleagueResultLabel.setText("Colleague not in System!!");
+        }
+
     }
 
 
     /**
-     *   "Delete Use" tab
+     *   "Delete User" tab
      */
 
     @FXML
@@ -327,10 +393,12 @@ public class Controller extends Application {
         if(Driver.deleteUser(Driver.getUsers(),Driver.getUserNum(),deleteTextField.getText())){
             Driver.setUserNum(Driver.getUserNum()-1);
             deleteResultLabel.setText("User is deleted successfully!");
+            System.out.println("User is deleted successfully!");
         }
-        else
+        else {
             deleteResultLabel.setText("User is not found in system");
-
+            System.out.println("User is not found in system");
+        }
 
 
     }
@@ -338,7 +406,7 @@ public class Controller extends Application {
 
 
     /**
-     *   "Check Use" tab
+     *   "Check User" tab
      */
 
     @FXML
@@ -356,14 +424,22 @@ public class Controller extends Application {
         Person person1 = selectUser(Driver.getUsers(),Driver.getUserNum(),userOneTextFiled.getText());
         Person person2 = selectUser(Driver.getUsers(),Driver.getUserNum(),userTwoTextFiled.getText());
 
-        if((person1 == null) && (person2 == null))
-            checkResultLabel.setText(userOneTextFiled.getText()+" and "+userTwoTextFiled.getText()+" are not in the System yet!");
-        else if((person1 != null) && (person2 == null))
-            checkResultLabel.setText(userTwoTextFiled.getText()+" is not in the System yet!");
-        else if((person1 == null) && (person2 != null))
-            checkResultLabel.setText(userOneTextFiled.getText()+" is not in the System yet!");
-        else
-            checkResultLabel.setText((person1.isFriend(person2.getName())? "Yes, they are friends" : "Nope, they are not friends"));
+        if((person1 == null) && (person2 == null)) {
+            checkResultLabel.setText(userOneTextFiled.getText() + " and " + userTwoTextFiled.getText() + " are not in the System yet!");
+            System.out.println(userOneTextFiled.getText()+" and "+userTwoTextFiled.getText()+" are not in the System yet!");
+        }
+        else if((person1 != null) && (person2 == null)) {
+            checkResultLabel.setText(userTwoTextFiled.getText() + " is not in the System yet!");
+            System.out.println(userTwoTextFiled.getText() + " is not in the System yet!");
+        }
+        else if((person1 == null) && (person2 != null)) {
+            checkResultLabel.setText(userOneTextFiled.getText() + " is not in the System yet!");
+            System.out.println(userOneTextFiled.getText()+" is not in the System yet!");
+        }
+        else {
+            checkResultLabel.setText((person1.isFriend(person2.getName()) ? "Yes, they are friends" : "Nope, they are not friends"));
+            System.out.println((person1.isFriend(person2.getName())? "Yes, they are friends" : "Nope, they are not friends"));
+        }
 
     }
 }

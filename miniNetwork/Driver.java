@@ -525,8 +525,8 @@ public class Driver {
 
             if(colleague!= null){
                 //if(selectedPerson.isFriend(colleagueName)){
-                ((Adult)selectedPerson).addColleague((Adult)colleague);
-                ((Adult)colleague).addColleague((Adult)selectedPerson);
+                ((Adult)selectedPerson).addColleague(colleague);
+                ((Adult)colleague).addColleague(selectedPerson);
                 // }
                 // else System.out.println("Sorry, you have not made friend with "+ colleagueName + " yet!!");
             }
@@ -621,8 +621,8 @@ public class Driver {
                  * Delete deleted user record from the Colleague list of the deleted user' Colleagues
                  */
                 for(int i = 0; i< ((Adult) deletedUser).getColleagueNumber() ; i++){
-                    deleteUser(((Adult) deletedUser).getColleagues()[i].getColleagues(),((Adult) deletedUser).getColleagues()[i].getColleagueNumber(), deletedUser.getName());
-                    ((Adult) deletedUser).getColleagues()[i].decreaseColleagueNumber();
+                    deleteUser(((Adult)((Adult) deletedUser).getColleagues()[i]).getColleagues(),((Adult)((Adult) deletedUser).getColleagues()[i]).getColleagueNumber(), deletedUser.getName());
+                    ((Adult)((Adult) deletedUser).getColleagues()[i]).decreaseColleagueNumber();
                 }
             }
 
