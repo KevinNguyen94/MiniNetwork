@@ -678,6 +678,7 @@ public class Driver {
             setUserNum(getUserNum()+1);
 
             selectedPerson = selectUser(users,userNum,res[0]);
+
             selectedPerson.setProfilePicture(res[1]);
             selectedPerson.setStatus(res[2]);
             selectedPerson.setGender(res[3].charAt(0));
