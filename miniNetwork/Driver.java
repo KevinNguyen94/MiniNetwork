@@ -4,10 +4,12 @@ package miniNetwork;/*
  * and open the template in the editor.
  */
 
+import exceptions.FileIsNotExistException;
 import exceptions.NotToBeFriendsException;
 import exceptions.TooYoungException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -227,8 +229,9 @@ public class Driver {
 
     public static String getUserList(){
         StringBuilder stringBuilder = new StringBuilder();
-        for(int i=0 ; i<userNum ; i++)
-            stringBuilder.append(users[i].getName()+"\n");
+        for(int i=0 ; i<userNum ; i++) {
+            stringBuilder.append(users[i].getName() + "\n");
+        }
         return stringBuilder.toString();
     }
 
@@ -241,11 +244,8 @@ public class Driver {
                 +"\nGender: "+selectedPerson.getGender()
                 +"\nAge: "+ selectedPerson.getAge()
                 +"\nState: "+ selectedPerson.getState()
-                +"\nUser Type: "+ selectedPerson.getUserType()
-                +"\nFriend list: \n");
+                +"\nUser Type: "+ selectedPerson.getUserType());
 
-        for(int i=0 ; i<selectedPerson.getFriendNumber() ; i++)
-            stringBuilder.append("   "+selectedPerson.getFriendList()[i].getName()+" ");
 
         if(selectedPerson instanceof YoungChild) {
             stringBuilder.append("\nParents: \n");
@@ -259,6 +259,10 @@ public class Driver {
             }
         }
         else if(selectedPerson instanceof Child) {
+            stringBuilder.append("\nFriend List: \n");
+            for(int i=0 ; i<selectedPerson.getFriendNumber() ; i++)
+                stringBuilder.append("   "+selectedPerson.getFriendList()[i].getName()+" ");
+
             stringBuilder.append("\n\nParents: \n");
             for (int i = 0; i < ((Child) selectedPerson).getParentNumber(); i++) {
                 stringBuilder.append("   "+ ((Child) selectedPerson).getParentList()[i].getName());
@@ -269,6 +273,10 @@ public class Driver {
             }
         }
         else if(selectedPerson instanceof Adult){
+            stringBuilder.append("\nFriend List: \n");
+            for(int i=0 ; i<selectedPerson.getFriendNumber() ; i++)
+                stringBuilder.append("   "+selectedPerson.getFriendList()[i].getName()+" ");
+
             stringBuilder.append("\nClassmate list:\n");
             for(int i=0 ; i< selectedPerson.getClassmateNumber() ; i++){
                 stringBuilder.append("   "+selectedPerson.getClassmates()[i].getName()+"  ");
@@ -659,8 +667,7 @@ public class Driver {
     /**
      * import data from people.txt and relations.txt
      */
-    public static void importDataFromTxt(){
-
+    public static void importDataFromTxt() throws FileIsNotExistException {
         //people.txt file:
         String[] res;
         List<String> list = isList("src/documents/people.txt");
@@ -717,34 +724,22 @@ public class Driver {
                 }
             }
         }
+
     }
 
-    public static List<String> isList(String filename){
-        List<String> list = new ArrayList<String>();
+    public static List<String> isList(String filename) throws FileIsNotExistException {
+        List<String> list = new ArrayList<>();
         File file = new File(filename);
-        if(file.exists()){
-            try {
-                list = Files.readAllLines(file.toPath(), Charset.defaultCharset());
+            if(file.exists()){
+                try {
+                    list = Files.readAllLines(file.toPath(), Charset.defaultCharset());
+                }
+                catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
-            catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+            else throw new FileIsNotExistException("\""+filename + "\" can not found!!!");
         return list;
-    }
-
-    public static void testException(){
-        int i=2;
-        try{
-            if(i==2)
-                throw new TooYoungException();
-            else if(i==3)
-                throw new NotToBeFriendsException("so Wrong!!!");
-        } catch (TooYoungException e) {
-            System.out.println("error");
-        }catch(NotToBeFriendsException e){
-
-        }
     }
 
 }

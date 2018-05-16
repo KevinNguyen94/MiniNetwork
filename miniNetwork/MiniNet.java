@@ -17,6 +17,5 @@ public class MiniNet {
         //Driver miniNet = new Driver();
         //miniNet.start();
         //Driver.importDataFromTxt();
-        Driver.testException();
     }
 }

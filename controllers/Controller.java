@@ -28,18 +28,13 @@ import static miniNetwork.Driver.selectUser;
 public class Controller extends Application {
     Driver driver = new Driver();
 
-
+    @FXML
+    private Label fileNotFoundLabel;
     @Override
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/GUI/Menu.fxml"));
 
-
-        //input data to object Driver
-        Driver.inputData();
-
-        //input data from people.txt
-        Driver.importDataFromTxt();
 
         // Set the scene by getting the Parent scene from FXMLLoader
         Scene scene = new Scene(loader.load());
@@ -47,6 +42,10 @@ public class Controller extends Application {
         primaryStage.setTitle("Menu");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        //input data to object Driver
+        Driver.inputData();
+
 
     }
 
@@ -63,6 +62,13 @@ public class Controller extends Application {
     public void handleListButton(ActionEvent event){
         System.out.println("You clicked List button!");
         userListArea.setText(Driver.getUserList());
+
+        //input data from people.txt
+        try {
+            Driver.importDataFromTxt();
+        } catch (FileIsNotExistException e) {
+            fileNotFoundLabel.setText(e.getMessage());
+        }
     }
 
 
@@ -90,7 +96,11 @@ public class Controller extends Application {
         parentsGridPane.setVisible(false);
         siblingGridPane.setVisible(false);
         try {
-            if (Integer.parseInt(ageTextField.getText()) < 17 && Integer.parseInt(ageTextField.getText()) > 2) {
+            if(Integer.parseInt(ageTextField.getText()) < 0 || Integer.parseInt(ageTextField.getText()) > 150){
+                isValidToRegister = false;
+                throw new NoSuchAgeException("Error! You input an invalid age");
+            }
+            else if (Integer.parseInt(ageTextField.getText()) < 17 && Integer.parseInt(ageTextField.getText()) > 2) {
                 parentsGridPane.setVisible(true);
             }
             else if (Integer.parseInt(ageTextField.getText()) < 3) {
@@ -101,9 +111,12 @@ public class Controller extends Application {
                 resultLabel.setText("the Username and Age valid");
                 System.out.println("the Username and Age valid");
             }
+
         } catch (NumberFormatException e) {
             resultLabel.setText("Wrong format!! please input a number!!");
-            System.out.println("Wrong format!! please input a number!!");
+            System.err.println("Wrong format!! please input a number!!");
+        } catch (NoSuchAgeException e) {
+            resultLabel.setText("The age is invalid!!");
         }
     }
 
@@ -307,11 +320,41 @@ public class Controller extends Application {
     @FXML
     public void handleAddFriendButton(){
         System.out.println("You clicked \"Add Friend\" button!");
+        Boolean error = false;
+
         friend = selectUser(Driver.getUsers(),Driver.getUserNum(),addFriendTextField.getText());
         if(friend != null){
-            Driver.getSelectedPerson().addFriend(friend);
-            addFriendResultLabel.setText(friend.getName()+" added successfully");
-            System.out.println(friend.getName()+" added successfully");
+            try{
+                if(friend instanceof YoungChild) {
+                    error=true;
+                    throw new TooYoungException();
+                }
+                else if((Driver.getSelectedPerson() instanceof Child && friend instanceof Adult) || (friend instanceof Child && Driver.getSelectedPerson() instanceof Adult) ){
+                    error=true;
+                    throw new NotToBeFriendsException("Error! You trying to make an adult and a child friend!");
+                }
+
+            }catch (TooYoungException e){
+                addFriendResultLabel.setText("Error! Young child friend not accepted!");
+            } catch (NotToBeFriendsException e) {
+                addFriendResultLabel.setText("Adult and Child cannot be friend!");
+            }
+
+            try{
+               if( (Driver.getSelectedPerson() instanceof Child) && (friend instanceof Child)  && (Math.abs(Driver.getSelectedPerson().getAge() - friend.getAge())>3) ){
+                    error=true;
+                    throw new NotToBeFriendsException("Error! Age gap between 2 Child is larger than 3");
+                }
+
+            }catch (NotToBeFriendsException e) {
+                addFriendResultLabel.setText("(2 Child) Age gap > 3 forbid!");
+            }
+
+            if(!error) {
+                Driver.getSelectedPerson().addFriend(friend);
+                addFriendResultLabel.setText(friend.getName() + " added successfully");
+                System.out.println(friend.getName() + " added successfully");
+            }
         }
         else{
             System.out.println("your friend is not in the system!");
@@ -332,10 +375,19 @@ public class Controller extends Application {
         System.out.println("You clicked \"Add Classmate\" button!");
         classmate = selectUser(Driver.getUsers(),Driver.getUserNum(),addClassmateTextField.getText());
         if(classmate != null){
-            Driver.getSelectedPerson().addClassmate(classmate);
-            classmate.addClassmate(Driver.getSelectedPerson());
-            addClassmateResultLabel.setText(classmate.getName()+" added successfully");
-            System.out.println(classmate.getName()+" added successfully");
+            try{
+                if(! (colleague instanceof Adult)){
+                    throw new NotToBeClassmatesException("You are trying to make a young child in a classmate relation");
+                }
+                else{
+                    Driver.getSelectedPerson().addClassmate(classmate);
+                    classmate.addClassmate(Driver.getSelectedPerson());
+                    addClassmateResultLabel.setText(classmate.getName()+" added successfully");
+                    System.out.println(classmate.getName()+" added successfully");}
+            }catch(NotToBeClassmatesException e){
+                addClassmateResultLabel.setText("Young Child is forbid!");
+            }
+
         }
         else{
             System.out.println("your classmate is not in the system!");
@@ -368,8 +420,7 @@ public class Controller extends Application {
                 }
 
             }catch(NotToBeColleaguesException e){
-                addColleagueResultLabel.setText("only adult accepted!");
-                System.out.println("only adult accepted!");
+                addColleagueResultLabel.setText("Only adult accepted!");
             }
         }
         else{

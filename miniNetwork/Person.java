@@ -23,7 +23,7 @@ public class Person {
         this.age = age;
         if(age<3)
             this.userType = "Young Child";
-        else if( age<16)
+        else if( age<17)
             this.userType = "Child";
 
         else

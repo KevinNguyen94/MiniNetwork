@@ -2,6 +2,6 @@ package exceptions;
 
 public class TooYoungException extends Exception {
     public TooYoungException(){
-        System.err.println("The selected person is too young!!");
+        System.err.println("Error!!! You trying to make friend with a young child!");
     }
 }
