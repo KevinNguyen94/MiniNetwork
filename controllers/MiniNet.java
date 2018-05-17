@@ -14,17 +14,10 @@ import java.io.IOException;
 
 import miniNetwork.*;
 
-
-import static miniNetwork.Driver.deleteUser;
-import static miniNetwork.Driver.importDataFromTxt;
 import static miniNetwork.Driver.selectUser;
 
 
-
-
-public class Controller extends Application {
-    Driver driver = new Driver();
-
+public class MiniNet extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -34,7 +27,6 @@ public class Controller extends Application {
 
         //input data to object Driver
         Driver.inputData();
-
 
         // Set the scene by getting the Parent scene from FXMLLoader
         Scene scene = new Scene(loader.load());
@@ -54,7 +46,7 @@ public class Controller extends Application {
     private TextArea userListArea;
 
     @FXML
-    public void handleListButton(ActionEvent event){
+    public void handleListButton(){
         System.out.println("You clicked List button!");
         userListArea.setText(Driver.getUserList());
     }
@@ -66,19 +58,23 @@ public class Controller extends Application {
     Button importTxtButton;
 
     @FXML
-    public void handleImportTxtButton(ActionEvent event){
+    public void handleImportTxtButton(){
         //input data from people.txt
         try {
             Driver.importDataFromTxt();
             System.out.println("Data from Txt files imported");
             fileNotFoundLabel.setText("Data from Txt files imported!!");
 
+            importTxtButton.setVisible(false);
+
         } catch (FileIsNotExistException e) {
             fileNotFoundLabel.setText(e.getMessage());
             System.err.println("Trying to retrieve data from hsqldb!!!");
-            //try to read data from database HERE
 
+            //try to read data from database HERE
             Driver.importDataFromDB();
+
+            importTxtButton.setVisible(false);
         }
 
     }

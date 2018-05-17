@@ -1,11 +1,11 @@
 package HSQLDB;
 
+import org.hsqldb.Server;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import org.hsqldb.Server;
 
 public class DBTest {
 
@@ -35,12 +35,6 @@ public class DBTest {
             connection.prepareStatement("insert into people (name, picture, status, gender, age, state) values ('Zoe Foster','','Founder of ZFX','F',28,'VIC');").execute();
             connection.prepareStatement("insert into people (name, picture, status, gender, age, state) values ('Mark Turner','Mark.jpeg','','M',2,'VIC');").execute();
 
-         /*   // query from the db
-            rs = connection.prepareStatement("select name, picture, status, gender, age, state from people;").executeQuery();
-
-            while(rs.next())
-                System.out.println(String.format("name: %1s, picture: \"%1s\" ,status: \"%1s\", gender: %1s, age: %1d, state: %1s", rs.getString(1), rs.getString(2),rs.getString(3), rs.getString(4), rs.getInt(5), rs.getString(6))); connection.commit();
-        */
 
         }
         catch (SQLException e2) {
