@@ -7,12 +7,15 @@ package miniNetwork;/*
 import exceptions.FileIsNotExistException;
 import exceptions.NotToBeFriendsException;
 import exceptions.TooYoungException;
+import HSQLDB.DBTest;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -669,6 +672,7 @@ public class Driver {
      */
     public static void importDataFromTxt() throws FileIsNotExistException {
         //people.txt file:
+
         String[] res;
         List<String> list = isList("src/documents/people.txt");
         for(String line : list){
@@ -683,6 +687,7 @@ public class Driver {
             selectedPerson.setStatus(res[2]);
             selectedPerson.setGender(res[3].charAt(0));
             selectedPerson.setState(res[5]);
+
         }
 
         //relations.txt file:
@@ -728,6 +733,28 @@ public class Driver {
 
     }
 
+
+    public static void importDataFromDB() {
+        //people.txt file:
+        String[] res;
+        List<String> list = isList(DBTest.isConnection());
+        for (String line : list) {
+            res = line.split(",");
+            addUser(users, userNum, res[0], Integer.parseInt(res[4]));
+            //userNum++;
+            setUserNum(getUserNum() + 1);
+
+            selectedPerson = selectUser(users, userNum, res[0]);
+
+            selectedPerson.setProfilePicture(res[1]);
+            selectedPerson.setStatus(res[2]);
+            selectedPerson.setGender(res[3].charAt(0));
+            selectedPerson.setState(res[5]);
+        }
+    }
+
+
+
     public static List<String> isList(String filename) throws FileIsNotExistException {
         List<String> list = new ArrayList<>();
         File file = new File(filename);
@@ -740,6 +767,22 @@ public class Driver {
                 }
             }
             else throw new FileIsNotExistException("\""+filename + "\" can not found!!!");
+        return list;
+    }
+
+    public static List<String> isList(Connection connection){
+        List<String> list = new ArrayList<>();
+
+        ResultSet rs = null;
+        try {
+            rs = connection.prepareStatement("select name, picture, status, gender, age, state from people;").executeQuery();
+
+            while(rs.next())
+                list.add(rs.getString(1)+","+rs.getString(2)+","+rs.getString(3)+","+rs.getString(4)+","+rs.getInt(5)+","+rs.getString(6));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return list;
     }
 

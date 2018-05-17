@@ -2,18 +2,15 @@ package controllers;
 
 import exceptions.*;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.InputMismatchException;
 
 import miniNetwork.*;
 
@@ -28,12 +25,15 @@ import static miniNetwork.Driver.selectUser;
 public class Controller extends Application {
     Driver driver = new Driver();
 
-    @FXML
-    private Label fileNotFoundLabel;
+
     @Override
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/GUI/Menu.fxml"));
+
+
+        //input data to object Driver
+        Driver.inputData();
 
 
         // Set the scene by getting the Parent scene from FXMLLoader
@@ -42,10 +42,6 @@ public class Controller extends Application {
         primaryStage.setTitle("Menu");
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        //input data to object Driver
-        Driver.inputData();
-
 
     }
 
@@ -57,20 +53,35 @@ public class Controller extends Application {
     @FXML
     private TextArea userListArea;
 
-
     @FXML
     public void handleListButton(ActionEvent event){
         System.out.println("You clicked List button!");
         userListArea.setText(Driver.getUserList());
+    }
 
+
+    @FXML
+    Label fileNotFoundLabel;
+    @FXML
+    Button importTxtButton;
+
+    @FXML
+    public void handleImportTxtButton(ActionEvent event){
         //input data from people.txt
         try {
             Driver.importDataFromTxt();
+            System.out.println("Data from Txt files imported");
+            fileNotFoundLabel.setText("Data from Txt files imported!!");
+
         } catch (FileIsNotExistException e) {
             fileNotFoundLabel.setText(e.getMessage());
-        }
-    }
+            System.err.println("Trying to retrieve data from hsqldb!!!");
+            //try to read data from database HERE
 
+            Driver.importDataFromDB();
+        }
+
+    }
 
 
     /**

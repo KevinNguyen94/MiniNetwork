@@ -9,10 +9,10 @@ import org.hsqldb.Server;
 
 public class DBTest {
 
-    public static void main(String[] args) {
+    public static Connection isConnection() {
         Server hsqlServer = null;
-        Connection connection = null;
         ResultSet rs = null;
+        Connection connection = null;
 
         hsqlServer = new Server();
         hsqlServer.setLogWriter(null);
@@ -35,12 +35,12 @@ public class DBTest {
             connection.prepareStatement("insert into people (name, picture, status, gender, age, state) values ('Zoe Foster','','Founder of ZFX','F',28,'VIC');").execute();
             connection.prepareStatement("insert into people (name, picture, status, gender, age, state) values ('Mark Turner','Mark.jpeg','','M',2,'VIC');").execute();
 
-            // query from the db
+         /*   // query from the db
             rs = connection.prepareStatement("select name, picture, status, gender, age, state from people;").executeQuery();
 
-
-                while(rs.next())
-                    System.out.println(String.format("name: %1s, picture: \"%1s\" ,status: \"%1s\", gender: %1s, age: %1d, state: %1s", rs.getString(1), rs.getString(2),rs.getString(3), rs.getString(4), rs.getInt(5), rs.getString(6))); connection.commit();
+            while(rs.next())
+                System.out.println(String.format("name: %1s, picture: \"%1s\" ,status: \"%1s\", gender: %1s, age: %1d, state: %1s", rs.getString(1), rs.getString(2),rs.getString(3), rs.getString(4), rs.getInt(5), rs.getString(6))); connection.commit();
+        */
 
         }
         catch (SQLException e2) {
@@ -49,5 +49,7 @@ public class DBTest {
         catch (ClassNotFoundException e2) {
             e2.printStackTrace();
         }
+
+        return connection;
     }
 }
